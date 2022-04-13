@@ -17,7 +17,7 @@ public enum Configuration {
     public final double mutationRate = 0.0003;
     public final int populationSize = 42;
 
-    public final CrossoverType crossoverType = CrossoverType.HRX;
+    public final CrossoverType crossoverType = CrossoverType.UPX;
     public final MutationType mutationType = MutationType.CIM;
     public final SelectionType selectionType = SelectionType.TOS;
 }

@@ -9,16 +9,15 @@ import java.util.Random;
 public class UPX extends CrossoverStrategy {
     private final Random randomGenerator;
 
-    protected UPX(double crossoverRate, Random randomGenerator) {
-        super(crossoverRate);
+    protected UPX(Random randomGenerator) {
         this.randomGenerator = randomGenerator;
     }
 
     // This implementation is taken straight from the Crossover Tutorial and suffers from the same problems explained there.
     // TODO: Rework this implementation!
     @Override
-    ArrayList<Individuum> execute(Individuum parent1, Individuum parent2) {
-        ArrayList<Individuum> children = new ArrayList<>();
+    ArrayList<Individuum<?, ?>> execute(Individuum<?, ?> parent1, Individuum<?, ?> parent2) {
+        ArrayList<Individuum<?, ?>> children = new ArrayList<>();
 
         /*
         Individuum child1 = parent01.copy();

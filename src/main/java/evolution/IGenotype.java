@@ -2,7 +2,6 @@ package evolution;
 
 import java.util.ArrayList;
 
-public interface IGenotype {
-    ArrayList<IGene> getGenes();
-    double calculateFitness();
+public interface IGenotype<T extends IGene> {
+    ArrayList<T> getGenes();
 }

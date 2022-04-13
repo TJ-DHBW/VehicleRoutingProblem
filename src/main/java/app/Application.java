@@ -1,13 +1,17 @@
 package app;
 
 import evolution.GeneticAlgorithm;
+import evolution.Individuum;
 import evolution.crossover.CrossoverStrategy;
 import evolution.mutation.MutationStrategy;
 import evolution.selection.SelectionStrategy;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Application {
     public static void main(String[] args) {
-        System.out.println("Henlo Wöld!");
+        DataInstance ukraineData = DataManagement.readData();
 
         Configuration configInstance = Configuration.INSTANCE;
 
@@ -16,7 +20,7 @@ public class Application {
         SelectionStrategy selectionStrategy = SelectionStrategy.get(configInstance.selectionType);
         GeneticAlgorithm geneticAlgorithm = new GeneticAlgorithm(configInstance.randomGenerator, crossoverStrategy, mutationStrategy, selectionStrategy);
 
-        geneticAlgorithm.buildInitialPopulation(configInstance.populationSize);
+        geneticAlgorithm.buildInitialPopulation(ukraineData.customers(), configInstance.populationSize);
         geneticAlgorithm.evolvePopulation();
     }
 }

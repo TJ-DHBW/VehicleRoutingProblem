@@ -4,6 +4,7 @@ import evolution.crossover.CrossoverStrategy;
 import evolution.mutation.MutationStrategy;
 import evolution.selection.SelectionStrategy;
 
+import java.util.Collection;
 import java.util.Random;
 
 public class GeneticAlgorithm {
@@ -20,7 +21,7 @@ public class GeneticAlgorithm {
         this.selectionStrategy = selectionStrategy;
     }
 
-    public void buildInitialPopulation(int populationSize){
+    public void buildInitialPopulation(Collection<? extends IGene> genePool, int populationSize){
 
     }
 

@@ -5,13 +5,7 @@ import evolution.Individuum;
 import java.util.ArrayList;
 
 public abstract class CrossoverStrategy {
-    protected final double crossoverRate;
-
-    protected CrossoverStrategy(double crossoverRate) {
-        this.crossoverRate = crossoverRate;
-    }
-
-    abstract ArrayList<Individuum> execute(Individuum parent1, Individuum parent2);
+    abstract ArrayList<Individuum<?, ?>> execute(Individuum<?, ?> parent1, Individuum<?, ?> parent2);
 
     // TODO: register implementations
     public static CrossoverStrategy get(CrossoverType crossoverType){

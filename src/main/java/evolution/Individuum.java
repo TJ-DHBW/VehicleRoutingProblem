@@ -1,17 +1,26 @@
 package evolution;
 
-public class Individuum {
+import java.util.ArrayList;
+import java.util.function.Function;
+
+public class Individuum<T extends IGenotype<U>, U extends IGene> {
     private double fitness = Double.MAX_VALUE;
-    private IGenotype genotype;
+    private final T genotype;
+    private final Function<ArrayList<U>, Double> fitnessFunction;
+
+    public Individuum(T genotype, Function<ArrayList<U>, Double> fitnessFunction){
+        this.genotype = genotype;
+        this.fitnessFunction = fitnessFunction;
+    }
 
     public double getFitness() {
         if (this.fitness == Double.MAX_VALUE){
-            this.fitness = genotype.calculateFitness();
+            this.fitness = this.fitnessFunction.apply(this.genotype.getGenes());
         }
         return fitness;
     }
 
-    public IGenotype getGenotype() {
+    public T getGenotype() {
         return genotype;
     }
 }
