@@ -20,7 +20,21 @@ public class Individuum<T extends IGenotype<U>, U extends IGene> {
         return fitness;
     }
 
+    // FIXME: This might crash. Is there a way to ensure that the cast succeeds?
+    public Individuum<T, U> createCopy(){
+        @SuppressWarnings("unchecked")
+        T genotypeCopy = (T) this.genotype.createCopy();
+        return new Individuum<>(genotypeCopy, this.fitnessFunction);
+    }
+
     public T getGenotype() {
         return genotype;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Individuum<?, ?> otherIndividuum)) return false;
+
+        return this.genotype.equals(otherIndividuum.genotype) && this.fitnessFunction.equals(otherIndividuum.fitnessFunction);
     }
 }
