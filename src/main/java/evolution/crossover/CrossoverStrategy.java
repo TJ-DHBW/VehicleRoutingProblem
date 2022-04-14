@@ -5,7 +5,7 @@ import evolution.Individuum;
 import java.util.ArrayList;
 
 public abstract class CrossoverStrategy {
-    abstract ArrayList<Individuum<?, ?>> execute(Individuum<?, ?> parent1, Individuum<?, ?> parent2);
+    public abstract ArrayList<Individuum<?, ?>> execute(Individuum<?, ?> parent1, Individuum<?, ?> parent2);
 
     // TODO: register implementations
     public static CrossoverStrategy get(CrossoverType crossoverType){

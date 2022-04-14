@@ -17,12 +17,10 @@ public class DataManagement {
     // TODO: Call this at an appropriate time
     public static DataInstance readData() {
         // See: https://stackoverflow.com/questions/3861989/preferred-way-of-loading-resources-in-java
-        URL dataURL = Thread.currentThread().getContextClassLoader().getResource("data.txt");
+        URL dataURL = Thread.currentThread().getContextClassLoader().getResource(Configuration.INSTANCE.dataName);
         if (dataURL == null) throw new RuntimeException("No data file found.");
 
-        try {
-            BufferedReader reader = new BufferedReader(new FileReader(dataURL.getPath(), StandardCharsets.UTF_8));
-
+        try (BufferedReader reader = new BufferedReader(new FileReader(dataURL.getPath(), StandardCharsets.UTF_8))){
             return DataManagement.parseFile(reader);
         } catch (IOException e) {
             e.printStackTrace();

@@ -4,7 +4,7 @@ import app.Configuration;
 import evolution.Individuum;
 
 public abstract class MutationStrategy {
-    abstract void mutate(Individuum<?, ?> i);
+    public abstract void mutate(Individuum<?, ?> i);
 
 
     // TODO: register implementations

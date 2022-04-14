@@ -1,15 +1,19 @@
 package app;
 
 import evolution.GeneticAlgorithm;
-import evolution.Individuum;
 import evolution.crossover.CrossoverStrategy;
 import evolution.mutation.MutationStrategy;
 import evolution.selection.SelectionStrategy;
+import vrp.Customer;
+import vrp.FitnessRoute;
+import vrp.Route;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.function.Function;
 
 public class Application {
+    // TODO: Do we need to implement Elitism?
+
     public static void main(String[] args) {
         DataInstance ukraineData = DataManagement.readData();
 
@@ -20,7 +24,20 @@ public class Application {
         SelectionStrategy selectionStrategy = SelectionStrategy.get(configInstance.selectionType);
         GeneticAlgorithm geneticAlgorithm = new GeneticAlgorithm(configInstance.randomGenerator, crossoverStrategy, mutationStrategy, selectionStrategy);
 
-        geneticAlgorithm.buildInitialPopulation(ukraineData.customers(), configInstance.populationSize);
-        geneticAlgorithm.evolvePopulation();
+        Function<ArrayList<Customer>, Double> fitnessFunction = getFitnessFunction();
+        geneticAlgorithm.initialize(configInstance.initialPopulationSize,
+                ukraineData.customers(),
+                Route::new,
+                fitnessFunction);
+        geneticAlgorithm.evolvePopulation(configInstance.maxGenerationCount);
+    }
+
+    private static Function<ArrayList<Customer>, Double> getFitnessFunction(){
+        return switch (Configuration.INSTANCE.vrpMode) {
+            case CVRP -> FitnessRoute::nonTimeWindow;
+            case CVRPTW -> FitnessRoute::timeWindow;
+
+            default -> throw new RuntimeException("VRPMode "+Configuration.INSTANCE.vrpMode+" is not yet implemented.");
+        };
     }
 }

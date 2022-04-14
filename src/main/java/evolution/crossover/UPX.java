@@ -19,7 +19,7 @@ public class UPX extends CrossoverStrategy {
     // This implementation is taken straight from the Crossover Tutorial and suffers from the same problems explained there.
     // TODO: Test this implementation!
     @Override
-    ArrayList<Individuum<?, ?>> execute(Individuum<?, ?> parent1, Individuum<?, ?> parent2) {
+    public ArrayList<Individuum<?, ?>> execute(Individuum<?, ?> parent1, Individuum<?, ?> parent2) {
         return executeHelper(parent1, parent2);
     }
 

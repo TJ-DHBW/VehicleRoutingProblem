@@ -14,13 +14,13 @@ public class TOS extends SelectionStrategy{
     }
 
     @Override
-    ArrayList<Individuum<?, ?>> select(ArrayList<Individuum<?, ?>> selectionPool, int selectionSize) {
+    public ArrayList<Individuum<?, ?>> select(ArrayList<Individuum<?, ?>> selectionPool, int selectionSize) {
         ArrayList<Individuum<?, ?>> matingPool = new ArrayList<>();
 
         if (selectionPool.size() < 1) return matingPool;
         LinkedList<Individuum<?, ?>> remaining = new LinkedList<>(selectionPool);
         // tournamentSize k is rounded up, because no individuum should be discarded without comparing fitness
-        int k = (int) Math.ceil((double)selectionPool.size()/selectionSize);
+        int k = (int) Math.ceil((double)remaining.size()/selectionSize);
 
         boolean unevenMates = false;
         while (!remaining.isEmpty()){
