@@ -1,5 +1,6 @@
 package evolution.crossover;
 
+import evolution.IGene;
 import evolution.Individuum;
 
 import java.util.ArrayList;
@@ -8,32 +9,43 @@ import java.util.Random;
 
 public class UPX extends CrossoverStrategy {
     private final Random randomGenerator;
+    private final double p;
 
-    protected UPX(Random randomGenerator) {
+    protected UPX(Random randomGenerator, double p) {
         this.randomGenerator = randomGenerator;
+        this.p = p;
     }
 
     // This implementation is taken straight from the Crossover Tutorial and suffers from the same problems explained there.
-    // TODO: Rework this implementation!
+    // TODO: Test this implementation!
     @Override
     ArrayList<Individuum<?, ?>> execute(Individuum<?, ?> parent1, Individuum<?, ?> parent2) {
+        return executeHelper(parent1, parent2);
+    }
+
+    private <T extends IGene> ArrayList<Individuum<?, ?>> executeHelper(Individuum<?, ?> parent1, Individuum<?, ?> parent2){
+        if (parent1.getGenotype().getGenes().get(0).getClass() != parent2.getGenotype().getGenes().get(0).getClass()) throw new RuntimeException("Crossover only works with parents that hold the same concrete type of gene!");
+
         ArrayList<Individuum<?, ?>> children = new ArrayList<>();
 
-        /*
-        Individuum child1 = parent01.copy();
-        Individuum child2 = parent02.copy();
+        Individuum<?, ?> child1 = parent1.createCopy();
+        Individuum<?, ?> child2 = parent2.createCopy();
 
-        HashMap<String, Integer> p1 = new HashMap<>();
-        for (int i = 0; i < child1.tourSize(); i++) {
-            p1.put(child1.getCity(i).toString(), i);
+        @SuppressWarnings("unchecked")
+        ArrayList<T> child1Genes = (ArrayList<T>) child1.getGenotype().getGenes();
+        @SuppressWarnings("unchecked")
+        ArrayList<T> child2Genes = (ArrayList<T>) child2.getGenotype().getGenes();
+
+        HashMap<T, Integer> p1 = new HashMap<>();
+        for (int i = 0; i < child1Genes.size(); i++) {
+            p1.put(child1Genes.get(i), i);
         }
-        HashMap<String, Integer> p2 = new HashMap<>();
-        for (int i = 0; i < child2.tourSize(); i++) {
-            p2.put(child2.getCity(i).toString(), i);
+        HashMap<T, Integer> p2 = new HashMap<>();
+        for (int i = 0; i < child2Genes.size(); i++) {
+            p2.put(child2Genes.get(i), i);
         }
 
-        // Unused in the current implementation
-        int tourSize = parent01.tourSize();
+        int tourSize = parent1.getGenotype().getGenes().size();
         int a = this.randomGenerator.nextInt(tourSize);
         int b = this.randomGenerator.nextInt(a, tourSize);
 
@@ -42,46 +54,39 @@ public class UPX extends CrossoverStrategy {
         do {
             for (int i = 0; i < tourSize; i++) {
                 double q = this.randomGenerator.nextDouble();
-                // Commented lines are exactly as the algorithm specifies, the line above is our understanding.
                 if (q >= this.p) {
-                    City t1 = child1.getCity(i);
-                    String t1s = t1.toString();
-                    City t2 = child2.getCity(i);
-                    String t2s = t2.toString();
+                    T t1 = child1Genes.get(i);
+                    T t2 = child2Genes.get(i);
 
-                    child1.setCity(i, t2);
-                    child1.setCity(p1.get(t2s), t1);
-                    //child1.setCity(p1.get(t1s), t1);
+                    child1Genes.set(i, t2);
+                    child1Genes.set(p1.get(t2), t1);
 
-                    child2.setCity(i, t1);
-                    child2.setCity(p2.get(t1s), t2);
-                    //child2.setCity(p2.get(t2s), t2);
+                    child2Genes.set(i, t1);
+                    child2Genes.set(p2.get(t1), t2);
 
-                    int tmp = p1.get(t1s);
-                    p1.put(t1s, p1.get(t2s));
-                    p1.put(t2s, tmp);
-                    //p1.put(t2s, p1.get(t1s));
+                    int tmp = p1.get(t1);
+                    p1.put(t1, p1.get(t2));
+                    p1.put(t2, tmp);
 
-                    tmp = p2.get(t1s);
-                    p2.put(t1s, p2.get(t2s));
-                    p2.put(t2s, tmp);
-                    //p2.put(t2s, p2.get(t1s));
+                    tmp = p2.get(t1);
+                    p2.put(t1, p2.get(t2));
+                    p2.put(t2, tmp);
                 }
             }
 
-            // Needed, because of the altered implementation of UPX
-            foundEquals = child1.equals(parent01)
-                    || child1.equals(parent02)
+            foundEquals = child1.equals(parent1)
+                    || child1.equals(parent2)
                     || child1.equals(child2)
-                    || child2.equals(parent01)
-                    || child2.equals(parent02);
+                    || child2.equals(parent1)
+                    || child2.equals(parent2);
             retryCount++;
             if (retryCount > 20)
                 throw new RuntimeException("Was not able to create differing children after 20 tries.");
         } while (foundEquals);
 
         children.add(child1);
-        children.add(child2);*/
+        children.add(child2);
+
         return children;
     }
 }

@@ -15,4 +15,16 @@ public class Route implements IGenotype<Customer> {
     public ArrayList<Customer> getGenes() {
         return route;
     }
+
+    @Override
+    public IGenotype<Customer> createCopy() {
+        return new Route(new ArrayList<>(this.route));
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof IGenotype<?> otherRoute)) return false;
+
+        return route.equals(otherRoute.getGenes());
+    }
 }
