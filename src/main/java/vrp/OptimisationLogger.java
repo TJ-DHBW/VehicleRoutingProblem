@@ -44,6 +44,7 @@ public class OptimisationLogger {
         // TODO: Logging
     }
 
+    // TODO: this should print the subRoutes of one route, not all routes
     private void writeRouteManagement(BufferedWriter writer) throws IOException {
         ArrayList<Individuum<?, ?>> individuums = geneticAlgorithm.getPopulation().getIndividuums();
         String[] lines = new String[individuums.size()+1];
