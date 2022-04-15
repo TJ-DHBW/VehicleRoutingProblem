@@ -13,7 +13,7 @@ public class CIM extends MutationStrategy{
     }
 
     @Override
-    public void mutate(Individuum<?, ?> individuum) {
+    public void mutateInner(Individuum<?, ?> individuum) {
         mutateHelper(individuum);
     }
 

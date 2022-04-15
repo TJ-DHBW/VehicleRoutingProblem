@@ -6,8 +6,10 @@ import evolution.mutation.MutationStrategy;
 import evolution.selection.SelectionStrategy;
 import vrp.Customer;
 import vrp.FitnessRoute;
+import vrp.OptimisationLogger;
 import vrp.Route;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.function.Function;
 
@@ -29,7 +31,20 @@ public class Application {
                 ukraineData.customers(),
                 Route::new,
                 fitnessFunction);
+
+        OptimisationLogger logger = new OptimisationLogger();
+        logger.setDataInstance(ukraineData);
+        logger.setGeneticAlgorithm(geneticAlgorithm);
+        logger.setStartTime(System.currentTimeMillis());
         geneticAlgorithm.evolvePopulation(configInstance.maxGenerationCount);
+        logger.setEndTime(System.currentTimeMillis());
+
+        try {
+            logger.logToFile(configInstance.logPath);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Was not able to write the logfile");
+        }
     }
 
     private static Function<ArrayList<Customer>, Double> getFitnessFunction(){

@@ -80,4 +80,16 @@ public class GeneticAlgorithm {
             this.mutationStrategy.mutate(individuum);
         });
     }
+
+    public Population getPopulation() {
+        return population;
+    }
+
+    public CrossoverStrategy getCrossoverStrategy() {
+        return crossoverStrategy;
+    }
+
+    public MutationStrategy getMutationStrategy() {
+        return mutationStrategy;
+    }
 }

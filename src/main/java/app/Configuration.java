@@ -6,6 +6,7 @@ import evolution.selection.SelectionType;
 import random.MersenneTwisterFast;
 import vrp.VRPMode;
 
+import java.nio.file.Path;
 import java.util.Random;
 
 public enum Configuration {
@@ -15,7 +16,7 @@ public enum Configuration {
 
     public final String dataName = "data.txt";
     // TODO: Set the log path
-    public final String logPath = "";
+    public final Path logPath = Path.of("");
 
     public final VRPMode vrpMode = VRPMode.CVRP;
 

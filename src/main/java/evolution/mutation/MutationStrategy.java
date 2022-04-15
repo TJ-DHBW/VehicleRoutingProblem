@@ -4,8 +4,18 @@ import app.Configuration;
 import evolution.Individuum;
 
 public abstract class MutationStrategy {
-    public abstract void mutate(Individuum<?, ?> i);
+    private int mutationCount = 0;
 
+    public void mutate(Individuum<?, ?> i){
+        mutationCount++;
+        mutateInner(i);
+    }
+
+    protected abstract void mutateInner(Individuum<?, ?> i);
+
+    public int getMutationCount() {
+        return mutationCount;
+    }
 
     // TODO: register implementations
     public static MutationStrategy get(MutationType mutationType){
