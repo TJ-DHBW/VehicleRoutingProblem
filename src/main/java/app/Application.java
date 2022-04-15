@@ -26,7 +26,12 @@ public class Application {
         SelectionStrategy selectionStrategy = SelectionStrategy.get(configInstance.selectionType);
         GeneticAlgorithm geneticAlgorithm = new GeneticAlgorithm(configInstance.randomGenerator, crossoverStrategy, mutationStrategy, selectionStrategy);
 
-        Function<ArrayList<Customer>, Double> fitnessFunction = getFitnessFunction();
+        Function<ArrayList<Customer>, Double> fitnessFunction = switch (Configuration.INSTANCE.vrpMode) {
+            case CVRP -> new FitnessRoute(ukraineData)::nonTimeWindow;
+            case CVRPTW -> new FitnessRoute(ukraineData)::timeWindow;
+
+            default -> throw new RuntimeException("VRPMode "+Configuration.INSTANCE.vrpMode+" is not yet implemented.");
+        };
         geneticAlgorithm.initialize(configInstance.initialPopulationSize,
                 ukraineData.customers(),
                 Route::new,
@@ -45,14 +50,5 @@ public class Application {
             e.printStackTrace();
             throw new RuntimeException("Was not able to write the logfile");
         }
-    }
-
-    private static Function<ArrayList<Customer>, Double> getFitnessFunction(){
-        return switch (Configuration.INSTANCE.vrpMode) {
-            case CVRP -> FitnessRoute::nonTimeWindow;
-            case CVRPTW -> FitnessRoute::timeWindow;
-
-            default -> throw new RuntimeException("VRPMode "+Configuration.INSTANCE.vrpMode+" is not yet implemented.");
-        };
     }
 }
