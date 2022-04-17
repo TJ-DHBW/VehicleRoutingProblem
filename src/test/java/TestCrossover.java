@@ -33,7 +33,7 @@ public class TestCrossover {
         int tourSizeParent2 = this.testIndividuum2.getGenotype().getGenes().size();
         Assertions.assertEquals(tourSizeParent1, tourSizeParent2);
 
-        ArrayList<Individuum<?, ?>> children = this.crossoverStrategy.execute(this.testIndividuum1, this.testIndividuum2);
+        ArrayList<Individuum<Route, Customer>> children = this.crossoverStrategy.execute(this.testIndividuum1, this.testIndividuum2);
 
         int tourSizeChild1 = children.get(0).getGenotype().getGenes().size();
         int tourSizeChild2 = children.get(1).getGenotype().getGenes().size();

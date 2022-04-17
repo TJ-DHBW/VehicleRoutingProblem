@@ -6,11 +6,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 
-public class Population {
+public class Population<T extends IGenotype<U>, U extends IGene> {
     // TODO: Maybe this will be final? Depends on how it is used by the genetic algorithm. Could be nice because you can set an enforced size.
-    private final ArrayList<Individuum<?, ?>> individuums;
+    private final ArrayList<Individuum<T, U>> individuums;
 
-    public <U extends IGene, T extends IGenotype<U>> Population(Collection<Individuum<T, U>> individuums) {
+    public Population(Collection<Individuum<T, U>> individuums) {
         this.individuums = new ArrayList<>(individuums);
     }
 
@@ -35,7 +35,7 @@ public class Population {
         }
     }
 
-    public ArrayList<Individuum<?, ?>> getIndividuums() {
+    public ArrayList<Individuum<T, U>> getIndividuums() {
         return individuums;
     }
 }

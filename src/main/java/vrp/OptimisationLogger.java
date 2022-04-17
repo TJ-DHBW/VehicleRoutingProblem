@@ -19,7 +19,7 @@ import java.util.concurrent.TimeUnit;
 
 public class OptimisationLogger {
     private DataInstance dataInstance = null;
-    private GeneticAlgorithm geneticAlgorithm = null;
+    private GeneticAlgorithm<Route, Customer> geneticAlgorithm = null;
     private Date startTime = null;
     private Date endTime = null;
 
@@ -46,12 +46,12 @@ public class OptimisationLogger {
 
     // TODO: this should print the subRoutes of one route, not all routes
     private void writeRouteManagement(BufferedWriter writer) throws IOException {
-        ArrayList<Individuum<?, ?>> individuums = geneticAlgorithm.getPopulation().getIndividuums();
+        ArrayList<Individuum<Route, Customer>> individuums = geneticAlgorithm.getPopulation().getIndividuums();
         String[] lines = new String[individuums.size()+1];
         lines[0] = "[Route Management]";
 
         for (int i = 0; i < individuums.size(); i++) {
-            Route currentRoute = (Route) individuums.get(i).getGenotype();
+            Route currentRoute = individuums.get(i).getGenotype();
             StringBuilder routeLine = new StringBuilder();
             routeLine.append("Route #").append(i).append(" |");
             for (Customer customer : currentRoute.getGenes()){
@@ -127,7 +127,7 @@ public class OptimisationLogger {
         this.dataInstance = dataInstance;
     }
 
-    public void setGeneticAlgorithm(GeneticAlgorithm geneticAlgorithm) {
+    public void setGeneticAlgorithm(GeneticAlgorithm<Route, Customer> geneticAlgorithm) {
         this.geneticAlgorithm = geneticAlgorithm;
     }
 

@@ -24,7 +24,7 @@ public class Application {
         CrossoverStrategy crossoverStrategy = CrossoverStrategy.get(configInstance.crossoverType);
         MutationStrategy mutationStrategy = MutationStrategy.get(configInstance.mutationType);
         SelectionStrategy selectionStrategy = SelectionStrategy.get(configInstance.selectionType);
-        GeneticAlgorithm geneticAlgorithm = new GeneticAlgorithm(configInstance.randomGenerator, crossoverStrategy, mutationStrategy, selectionStrategy);
+        GeneticAlgorithm<Route, Customer> geneticAlgorithm = new GeneticAlgorithm<>(configInstance.randomGenerator, crossoverStrategy, mutationStrategy, selectionStrategy);
 
         Function<ArrayList<Customer>, Double> fitnessFunction = switch (Configuration.INSTANCE.vrpMode) {
             case CVRP -> new FitnessRoute(ukraineData)::nonTimeWindow;

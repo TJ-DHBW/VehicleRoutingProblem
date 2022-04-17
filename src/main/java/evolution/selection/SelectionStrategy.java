@@ -1,12 +1,14 @@
 package evolution.selection;
 
 import app.Configuration;
+import evolution.IGene;
+import evolution.IGenotype;
 import evolution.Individuum;
 
 import java.util.ArrayList;
 
 public abstract class SelectionStrategy {
-    public abstract ArrayList<Individuum<?, ?>> select(ArrayList<Individuum<?, ?>> selectionPool, int selectionSize);
+    public abstract <T extends IGenotype<U>, U extends IGene> ArrayList<Individuum<T, U>> select(ArrayList<Individuum<T, U>> selectionPool, int selectionSize);
 
 
     // TODO: register implementations

@@ -7,12 +7,12 @@ import evolution.selection.SelectionStrategy;
 import java.util.*;
 import java.util.function.Function;
 
-public class GeneticAlgorithm {
+public class GeneticAlgorithm<T extends IGenotype<U>, U extends IGene> {
     private final Random randomGenerator;
     private final CrossoverStrategy crossoverStrategy;
     private final MutationStrategy mutationStrategy;
     private final SelectionStrategy selectionStrategy;
-    private  Population population;
+    private  Population<T, U> population;
 
     public GeneticAlgorithm(Random randomGenerator, CrossoverStrategy crossoverStrategy, MutationStrategy mutationStrategy, SelectionStrategy selectionStrategy) {
         this.randomGenerator = randomGenerator;
@@ -21,7 +21,7 @@ public class GeneticAlgorithm {
         this.selectionStrategy = selectionStrategy;
     }
 
-    public <T extends IGenotype<U>, U extends IGene> void initialize(int populationSize, Collection<U> genePool, Function<ArrayList<U>, T> genotypeConstructor, Function<ArrayList<U>, Double> fitnessFunction){
+    public void initialize(int populationSize, Collection<U> genePool, Function<ArrayList<U>, T> genotypeConstructor, Function<ArrayList<U>, Double> fitnessFunction){
         ArrayList<Individuum<T, U>> individuums = new ArrayList<>();
         ArrayList<U> availableGenes = new ArrayList<>(genePool);
 
@@ -31,7 +31,7 @@ public class GeneticAlgorithm {
             individuums.add(new Individuum<>(genotype, fitnessFunction));
         }
 
-        population = new Population(individuums);
+        population = new Population<>(individuums);
     }
 
     public void evolvePopulation(int maxGenerationCount){
@@ -41,9 +41,9 @@ public class GeneticAlgorithm {
             generationCount++;
 
             // TODO: Configure selectionSize
-            ArrayList<Individuum<?, ?>> matingPool = select(this.population.getIndividuums(), 1);
+            ArrayList<Individuum<T, U>> matingPool = select(this.population.getIndividuums(), 1);
 
-            ArrayList<Individuum<?, ?>> children = makeLoveNotWar(matingPool);
+            ArrayList<Individuum<T, U>> children = makeLoveNotWar(matingPool);
             mutate(children);
 
             int numToExterminate = (int) (this.randomGenerator.nextDouble() * this.population.getIndividuums().size() * 0.1);
@@ -53,27 +53,27 @@ public class GeneticAlgorithm {
         }
     }
 
-    private ArrayList<Individuum<?, ?>> select(ArrayList<Individuum<?, ?>> individuums, int selectionSize) {
+    private ArrayList<Individuum<T, U>> select(ArrayList<Individuum<T, U>> individuums, int selectionSize) {
         return this.selectionStrategy.select(individuums, selectionSize);
     }
 
     // TODO: Probably rename :(
-    private ArrayList<Individuum<?, ?>> makeLoveNotWar(List<Individuum<?, ?>> matingPool){
+    private ArrayList<Individuum<T, U>> makeLoveNotWar(List<Individuum<T, U>> matingPool){
         Collections.shuffle(matingPool);
-        ArrayList<Individuum<?, ?>> children = new ArrayList<>();
+        ArrayList<Individuum<T, U>> children = new ArrayList<>();
 
         for (int i = 1; i < matingPool.size(); i += 2) {
             // TODO: Configure crossoverRate
             if (this.randomGenerator.nextDouble() < 0.5) continue;
 
-            ArrayList<Individuum<?, ?>> newChildren = this.crossoverStrategy.execute(matingPool.get(i-1), matingPool.get(i));
+            ArrayList<Individuum<T, U>> newChildren = this.crossoverStrategy.execute(matingPool.get(i-1), matingPool.get(i));
             children.addAll(newChildren);
         }
 
         return children;
     }
 
-    private void mutate(ArrayList<Individuum<?, ?>> individuums){
+    private void mutate(ArrayList<Individuum<T, U>> individuums){
         individuums.forEach(individuum -> {
             // TODO: Configure mutationRate
             if (this.randomGenerator.nextDouble() < 0.5) return;
@@ -81,7 +81,7 @@ public class GeneticAlgorithm {
         });
     }
 
-    public Population getPopulation() {
+    public Population<T, U> getPopulation() {
         return population;
     }
 

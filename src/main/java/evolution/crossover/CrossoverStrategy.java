@@ -1,18 +1,20 @@
 package evolution.crossover;
 
 import app.Configuration;
+import evolution.IGene;
+import evolution.IGenotype;
 import evolution.Individuum;
 
 import java.util.ArrayList;
 
 public abstract class CrossoverStrategy {
     private int crossoverCount = 0;
-    public ArrayList<Individuum<?, ?>> execute(Individuum<?, ?> parent1, Individuum<?, ?> parent2){
+    public <T extends IGenotype<U>, U extends IGene> ArrayList<Individuum<T, U>> execute(Individuum<T, U> parent1, Individuum<T, U> parent2){
         crossoverCount++;
         return executeInner(parent1, parent2);
     }
 
-    protected abstract ArrayList<Individuum<?, ?>> executeInner(Individuum<?, ?> parent1, Individuum<?, ?> parent2);
+    protected abstract <T extends IGenotype<U>, U extends IGene> ArrayList<Individuum<T, U>> executeInner(Individuum<T, U> parent1, Individuum<T, U> parent2);
 
     public int getCrossoverCount(){
         return crossoverCount;
