@@ -8,7 +8,7 @@ import java.util.Random;
 public class CIM extends MutationStrategy{
     private final Random randomGenerator;
 
-    protected CIM(Random randomGenerator) {
+    public CIM(Random randomGenerator) {
         this.randomGenerator = randomGenerator;
     }
 

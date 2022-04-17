@@ -11,7 +11,7 @@ public class UPX extends CrossoverStrategy {
     private final Random randomGenerator;
     private final double p;
 
-    protected UPX(Random randomGenerator, double p) {
+    public UPX(Random randomGenerator, double p) {
         this.randomGenerator = randomGenerator;
         this.p = p;
     }
