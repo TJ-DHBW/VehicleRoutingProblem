@@ -3,12 +3,13 @@ package vrp;
 import evolution.IGenotype;
 
 import java.util.ArrayList;
+import java.util.Collection;
 
 public class Route implements IGenotype<Customer> {
     private final ArrayList<Customer> route;
 
-    public Route(ArrayList<Customer> route) {
-        this.route = route;
+    public Route(Collection<Customer> route) {
+        this.route = new ArrayList<>(route);
     }
 
     @Override
