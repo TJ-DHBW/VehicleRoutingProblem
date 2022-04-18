@@ -12,19 +12,23 @@ import java.util.List;
 import java.util.Random;
 import java.util.function.Function;
 
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class TestSelection {
-    private SelectionStrategy selectionStrategy;
+    private SelectionStrategy[] selectionStrategies;
     private ArrayList<Individuum<Route, Customer>> testPopulation;
     private int testK;
 
     @BeforeEach
     public void beforeEach() {
-        Random r = mock(MersenneTwisterFast.class);
-        // TODO: Random always returns 0 right now
-        // TODO: Make this dynamic to the Config or always test all implementations.
-        this.selectionStrategy = new TOS(r);
+        Random randomTOS = mock(MersenneTwisterFast.class);
+        when(randomTOS.nextInt(anyInt())).thenReturn(0);
+        // TODO: Add other implementations
+        this.selectionStrategies = new SelectionStrategy[]{
+                new TOS(randomTOS)
+        };
 
         Function<ArrayList<Customer>, Double> ff = ignore -> 1.0;
         Customer[] customers = new Customer[]{
@@ -50,26 +54,40 @@ public class TestSelection {
     public void depotComplete() {
         // TODO: what the hell are we supposed to do here?
     }
+
     @Test
     @Order(2)
     @DisplayName("select an even number of individuals")
     public void evenNumber() {
-        ArrayList<Individuum<Route, Customer>> selection = this.selectionStrategy.select(this.testPopulation, this.testK);
+        for (SelectionStrategy selectionStrategy : this.selectionStrategies) {
+            System.out.println("Testing selectionStrategy: "+selectionStrategy.getClass().getCanonicalName());
 
-        Assertions.assertEquals(0, selection.size() % 2);
+            ArrayList<Individuum<Route, Customer>> selection = selectionStrategy.select(this.testPopulation, this.testK);
+
+            Assertions.assertEquals(0, selection.size() % 2);
+
+            System.out.println("Success: "+selectionStrategy.getClass().getCanonicalName());
+        }
     }
+
     @Test
     @Order(3)
     @DisplayName("selection does not contain duplicates")
     public void noDuplicates() {
-        ArrayList<Individuum<Route, Customer>> selection = this.selectionStrategy.select(this.testPopulation, this.testK);
+        for (SelectionStrategy selectionStrategy : this.selectionStrategies) {
+            System.out.println("Testing selectionStrategy: "+selectionStrategy.getClass().getCanonicalName());
 
-        HashSet<Individuum<Route, Customer>> seen = new HashSet<>();
-        for (Individuum<Route, Customer> individuum : selection) {
-            if (seen.contains(individuum)) {
-                Assertions.fail();
+            ArrayList<Individuum<Route, Customer>> selection = selectionStrategy.select(this.testPopulation, this.testK);
+
+            HashSet<Individuum<Route, Customer>> seen = new HashSet<>();
+            for (Individuum<Route, Customer> individuum : selection) {
+                if (seen.contains(individuum)) {
+                    Assertions.fail();
+                }
+                seen.add(individuum);
             }
-            seen.add(individuum);
+
+            System.out.println("Success: "+selectionStrategy.getClass().getCanonicalName());
         }
     }
 }

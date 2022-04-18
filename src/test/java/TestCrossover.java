@@ -12,17 +12,19 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class TestCrossover {
-    private CrossoverStrategy crossoverStrategy;
+    private CrossoverStrategy[] crossoverStrategies;
     private Individuum<Route, Customer> testIndividuum1;
     private Individuum<Route, Customer> testIndividuum2;
     private Customer[] customers;
 
     @BeforeEach
     public void beforeEach(){
-        Random r = mock(MersenneTwisterFast.class);
-        when(r.nextDouble()).thenReturn(0.9, 0.0);
-        // TODO: Make this dynamic to the Config or always test all implementations.
-        this.crossoverStrategy = new UPX(r, 0.5);
+        Random randomUPX = mock(MersenneTwisterFast.class);
+        when(randomUPX.nextDouble()).thenReturn(0.9, 0.0);
+        // TODO: Add other implementations
+        this.crossoverStrategies = new CrossoverStrategy[]{
+                new UPX(randomUPX, 0.5)
+        };
 
         customers = new Customer[]{
                 new Customer(1, 0, 0, 0, 0, 0, 0),
@@ -44,38 +46,55 @@ public class TestCrossover {
         int tourSizeParent2 = this.testIndividuum2.getGenotype().getGenes().size();
         Assertions.assertEquals(tourSizeParent1, tourSizeParent2);
 
-        ArrayList<Individuum<Route, Customer>> children = this.crossoverStrategy.execute(this.testIndividuum1, this.testIndividuum2);
+        for (CrossoverStrategy crossoverStrategy : this.crossoverStrategies) {
+            System.out.println("Testing crossoverStrategy: "+crossoverStrategy.getClass().getCanonicalName());
 
-        int tourSizeChild1 = children.get(0).getGenotype().getGenes().size();
-        int tourSizeChild2 = children.get(1).getGenotype().getGenes().size();
-        Assertions.assertEquals(tourSizeChild1, tourSizeParent1);
-        Assertions.assertEquals(tourSizeChild2, tourSizeParent1);
+            ArrayList<Individuum<Route, Customer>> children = crossoverStrategy.execute(this.testIndividuum1, this.testIndividuum2);
+
+            int tourSizeChild1 = children.get(0).getGenotype().getGenes().size();
+            int tourSizeChild2 = children.get(1).getGenotype().getGenes().size();
+            Assertions.assertEquals(tourSizeChild1, tourSizeParent1);
+            Assertions.assertEquals(tourSizeChild2, tourSizeParent1);
+
+            System.out.println("Success: "+crossoverStrategy.getClass().getCanonicalName());
+        }
     }
 
     @Test
     @Order(2)
     @DisplayName("no duplicate tours should occur in children")
     public void duplicates() {
-        ArrayList<Individuum<Route, Customer>> children = this.crossoverStrategy.execute(this.testIndividuum1, this.testIndividuum2);
+        for (CrossoverStrategy crossoverStrategy : this.crossoverStrategies) {
+            System.out.println("Testing crossoverStrategy: "+crossoverStrategy.getClass().getCanonicalName());
 
-        Route child1Genotype = children.get(0).getGenotype();
-        Route child2Genotype = children.get(1).getGenotype();
+            ArrayList<Individuum<Route, Customer>> children = crossoverStrategy.execute(this.testIndividuum1, this.testIndividuum2);
 
-        Assertions.assertNotEquals(child1Genotype, child2Genotype);
+            Route child1Genotype = children.get(0).getGenotype();
+            Route child2Genotype = children.get(1).getGenotype();
+
+            Assertions.assertNotEquals(child1Genotype, child2Genotype);
+            System.out.println("Success: "+crossoverStrategy.getClass().getCanonicalName());
+        }
     }
 
     @Test
     @Order(3)
     @DisplayName("all customer indices should be included for each child")
     public void completeness() {
-        ArrayList<Individuum<Route, Customer>> children = this.crossoverStrategy.execute(this.testIndividuum1, this.testIndividuum2);
+        for (CrossoverStrategy crossoverStrategy : this.crossoverStrategies) {
+            System.out.println("Testing crossoverStrategy: "+crossoverStrategy.getClass().getCanonicalName());
 
-        ArrayList<Customer> child1Genes = children.get(0).getGenotype().getGenes();
-        ArrayList<Customer> child2Genes = children.get(1).getGenotype().getGenes();
+            ArrayList<Individuum<Route, Customer>> children = crossoverStrategy.execute(this.testIndividuum1, this.testIndividuum2);
 
-        for (Customer customer : this.customers) {
-            Assertions.assertTrue(child1Genes.contains(customer));
-            Assertions.assertTrue(child2Genes.contains(customer));
+            ArrayList<Customer> child1Genes = children.get(0).getGenotype().getGenes();
+            ArrayList<Customer> child2Genes = children.get(1).getGenotype().getGenes();
+
+            for (Customer customer : this.customers) {
+                Assertions.assertTrue(child1Genes.contains(customer));
+                Assertions.assertTrue(child2Genes.contains(customer));
+            }
+
+            System.out.println("Success: "+crossoverStrategy.getClass().getCanonicalName());
         }
     }
 
@@ -83,15 +102,21 @@ public class TestCrossover {
     @Order(4)
     @DisplayName("permutation of each child should be different from the permutations of the parents")
     public void structure() {
-        ArrayList<Individuum<Route, Customer>> children = this.crossoverStrategy.execute(this.testIndividuum1, this.testIndividuum2);
+        for (CrossoverStrategy crossoverStrategy : this.crossoverStrategies) {
+            System.out.println("Testing crossoverStrategy: "+crossoverStrategy.getClass().getCanonicalName());
 
-        Route child1Genotype = children.get(0).getGenotype();
-        Route child2Genotype = children.get(1).getGenotype();
+            ArrayList<Individuum<Route, Customer>> children = crossoverStrategy.execute(this.testIndividuum1, this.testIndividuum2);
 
-        Assertions.assertNotEquals(child1Genotype, this.testIndividuum1.getGenotype());
-        Assertions.assertNotEquals(child1Genotype, this.testIndividuum2.getGenotype());
+            Route child1Genotype = children.get(0).getGenotype();
+            Route child2Genotype = children.get(1).getGenotype();
 
-        Assertions.assertNotEquals(child2Genotype, this.testIndividuum1.getGenotype());
-        Assertions.assertNotEquals(child2Genotype, this.testIndividuum2.getGenotype());
+            Assertions.assertNotEquals(child1Genotype, this.testIndividuum1.getGenotype());
+            Assertions.assertNotEquals(child1Genotype, this.testIndividuum2.getGenotype());
+
+            Assertions.assertNotEquals(child2Genotype, this.testIndividuum1.getGenotype());
+            Assertions.assertNotEquals(child2Genotype, this.testIndividuum2.getGenotype());
+
+            System.out.println("Success: "+crossoverStrategy.getClass().getCanonicalName());
+        }
     }
 }
