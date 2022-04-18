@@ -9,6 +9,7 @@ import vrp.Route;
 import java.util.*;
 
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class TestCrossover {
     private CrossoverStrategy crossoverStrategy;
@@ -19,7 +20,7 @@ public class TestCrossover {
     @BeforeEach
     public void beforeEach(){
         Random r = mock(MersenneTwisterFast.class);
-        // TODO: Random always returns 0 right now
+        when(r.nextDouble()).thenReturn(0.9, 0.0);
         // TODO: Make this dynamic to the Config or always test all implementations.
         this.crossoverStrategy = new UPX(r, 0.5);
 
@@ -60,7 +61,6 @@ public class TestCrossover {
         Route child1Genotype = children.get(0).getGenotype();
         Route child2Genotype = children.get(1).getGenotype();
 
-        // TODO: Test if this works with equals.
         Assertions.assertNotEquals(child1Genotype, child2Genotype);
     }
 
