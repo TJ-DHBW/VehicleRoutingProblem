@@ -14,6 +14,10 @@ public class GeneticAlgorithm<T extends IGenotype<U>, U extends IGene> {
     private final SelectionStrategy selectionStrategy;
     private  Population<T, U> population;
 
+    private int selectionSize = 100;
+    private double crossoverRate = 0.7;
+    private double mutationRate = 0.003;
+
     public GeneticAlgorithm(Random randomGenerator, CrossoverStrategy crossoverStrategy, MutationStrategy mutationStrategy, SelectionStrategy selectionStrategy) {
         this.randomGenerator = randomGenerator;
         this.crossoverStrategy = crossoverStrategy;
@@ -40,8 +44,7 @@ public class GeneticAlgorithm<T extends IGenotype<U>, U extends IGene> {
         while (generationCount < maxGenerationCount) {
             generationCount++;
 
-            // TODO: Configure selectionSize
-            ArrayList<Individuum<T, U>> matingPool = select(this.population.getIndividuums(), 1);
+            ArrayList<Individuum<T, U>> matingPool = select(this.population.getIndividuums(), this.selectionSize);
 
             ArrayList<Individuum<T, U>> children = makeLoveNotWar(matingPool);
             mutate(children);
@@ -63,8 +66,7 @@ public class GeneticAlgorithm<T extends IGenotype<U>, U extends IGene> {
         ArrayList<Individuum<T, U>> children = new ArrayList<>();
 
         for (int i = 1; i < matingPool.size(); i += 2) {
-            // TODO: Configure crossoverRate
-            if (this.randomGenerator.nextDouble() < 0.5) continue;
+            if (this.randomGenerator.nextDouble() < this.crossoverRate) continue;
 
             ArrayList<Individuum<T, U>> newChildren = this.crossoverStrategy.execute(matingPool.get(i-1), matingPool.get(i));
             children.addAll(newChildren);
@@ -75,8 +77,7 @@ public class GeneticAlgorithm<T extends IGenotype<U>, U extends IGene> {
 
     private void mutate(ArrayList<Individuum<T, U>> individuums){
         individuums.forEach(individuum -> {
-            // TODO: Configure mutationRate
-            if (this.randomGenerator.nextDouble() < 0.5) return;
+            if (this.randomGenerator.nextDouble() < this.mutationRate) return;
             this.mutationStrategy.mutate(individuum);
         });
     }
@@ -91,5 +92,17 @@ public class GeneticAlgorithm<T extends IGenotype<U>, U extends IGene> {
 
     public MutationStrategy getMutationStrategy() {
         return mutationStrategy;
+    }
+
+    public void setSelectionSize(int selectionSize) {
+        this.selectionSize = selectionSize;
+    }
+
+    public void setCrossoverRate(double crossoverRate) {
+        this.crossoverRate = crossoverRate;
+    }
+
+    public void setMutationRate(double mutationRate) {
+        this.mutationRate = mutationRate;
     }
 }

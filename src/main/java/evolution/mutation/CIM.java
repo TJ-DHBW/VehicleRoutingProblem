@@ -14,7 +14,6 @@ public class CIM extends MutationStrategy{
         this.randomGenerator = randomGenerator;
     }
 
-    // TODO Test this implementation
     @Override
     public <T extends IGenotype<U>, U extends IGene> void mutateInner(Individuum<T, U> individuum) {
         ArrayList<U> genes = individuum.getGenotype().getGenes();

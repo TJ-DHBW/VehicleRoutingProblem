@@ -7,7 +7,6 @@ import java.util.Collection;
 import java.util.Comparator;
 
 public class Population<T extends IGenotype<U>, U extends IGene> {
-    // TODO: Maybe this will be final? Depends on how it is used by the genetic algorithm. Could be nice because you can set an enforced size.
     private final ArrayList<Individuum<T, U>> individuums;
 
     public Population(Collection<Individuum<T, U>> individuums) {
@@ -33,6 +32,12 @@ public class Population<T extends IGenotype<U>, U extends IGene> {
             }
             this.individuums.remove(indexToExterminate);
         }
+    }
+
+    public Individuum<T, U> getChampion() {
+        if (this.individuums.size() < 1) throw new IllegalStateException("A population without individuals can not provide a champion!");
+        this.sort();
+        return this.individuums.get(0);
     }
 
     public ArrayList<Individuum<T, U>> getIndividuums() {

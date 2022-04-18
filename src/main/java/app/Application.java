@@ -25,10 +25,15 @@ public class Application {
         MutationStrategy mutationStrategy = MutationStrategy.get(configInstance.mutationType);
         SelectionStrategy selectionStrategy = SelectionStrategy.get(configInstance.selectionType);
         GeneticAlgorithm<Route, Customer> geneticAlgorithm = new GeneticAlgorithm<>(configInstance.randomGenerator, crossoverStrategy, mutationStrategy, selectionStrategy);
+        geneticAlgorithm.setSelectionSize(configInstance.matingSelectionSize);
+        geneticAlgorithm.setCrossoverRate(configInstance.crossoverRate);
+        geneticAlgorithm.setMutationRate(configInstance.mutationRate);
 
+        FitnessRoute fitnessRoute = new FitnessRoute(ukraineData);
+        fitnessRoute.setPenaltyPer1Lateness(configInstance.penaltyPer1Lateness);
         Function<ArrayList<Customer>, Double> fitnessFunction = switch (Configuration.INSTANCE.vrpMode) {
-            case CVRP -> new FitnessRoute(ukraineData)::nonTimeWindow;
-            case CVRPTW -> new FitnessRoute(ukraineData)::timeWindow;
+            case CVRP -> fitnessRoute::nonTimeWindow;
+            case CVRPTW -> fitnessRoute::timeWindow;
 
             default -> throw new RuntimeException("VRPMode "+Configuration.INSTANCE.vrpMode+" is not yet implemented.");
         };

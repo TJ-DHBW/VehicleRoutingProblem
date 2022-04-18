@@ -21,11 +21,18 @@ public enum Configuration {
     public final VRPMode vrpMode = VRPMode.CVRP;
 
     // TODO validate the rates
+    /**
+     * Rate of a crossover happening. Between 0.6 and 0.8
+     */
     public final double crossoverRate = 0.7;
-    public final double mutationRate = 0.0003;
+    /**
+     * Rate of a mutation happening. Between 0.001 and 0.005
+     */
+    public final double mutationRate = 0.003;
     public final int matingSelectionSize = 16;
     public final int initialPopulationSize = 42;
     public final int maxGenerationCount = 420;
+    public final int penaltyPer1Lateness = 10;
 
     public final CrossoverType crossoverType = CrossoverType.UPX;
     public final MutationType mutationType = MutationType.CIM;

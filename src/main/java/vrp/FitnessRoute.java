@@ -7,9 +7,8 @@ import java.util.Arrays;
 import java.util.Comparator;
 
 public class FitnessRoute {
-    // FIXME: Adjust this value.
-    private final int penaltyPer1Lateness = 10;
     private final DataInstance dataInstance;
+    private int penaltyPer1Lateness = 10;
 
     public FitnessRoute(DataInstance dataInstance){
         this.dataInstance = dataInstance;
@@ -48,7 +47,6 @@ public class FitnessRoute {
         return totalDistance;
     }
 
-    // TODO: Implement fitness function for VRPTW
     // TODO: This might be possible faster and better (especially the timing stuff)
     // TODO: Test this
     public double timeWindow(ArrayList<Customer> route){
@@ -59,10 +57,10 @@ public class FitnessRoute {
         int depotX = dataInstance.depots().get(0).getX();
         int depotY = dataInstance.depots().get(0).getY();
 
-        ArrayList<ArrayList<Customer>> routes = splitToSubRoutes(route);
+        ArrayList<ArrayList<Customer>> routes = Route.splitToSubRoutes(route, dataInstance.vehiclesCapacity());
         routes.sort(Comparator.comparingInt(subRoute -> subRoute.get(0).readyTime()));
 
-        int[] vehicleReadyTimes = new int[dataInstance.vehiclesCapacity()];
+        int[] vehicleReadyTimes = new int[dataInstance.vehiclesNum()];
         for (ArrayList<Customer> subRoute : routes) {
             int currentTime = vehicleReadyTimes[0];
             int vehicleX = depotX;
@@ -88,32 +86,15 @@ public class FitnessRoute {
         return totalFitness;
     }
 
-    private ArrayList<ArrayList<Customer>> splitToSubRoutes(ArrayList<Customer> completeRoute) {
-        ArrayList<ArrayList<Customer>> routes = new ArrayList<>();
-        int customersServed;
-        for (int i = 0; i < completeRoute.size(); i += customersServed) {
-            ArrayList<Customer> subRoute = new ArrayList<>();
-            customersServed = 0;
-            int supplyAccumulator = 0;
-            int indexOffset = 0;
-            while (i+indexOffset < completeRoute.size()){
-                Customer nextCustomer = completeRoute.get(i+indexOffset);
-                if (supplyAccumulator+ nextCustomer.demand() > dataInstance.vehiclesCapacity()) break;
-                supplyAccumulator += nextCustomer.demand();
-                customersServed++;
-                subRoute.add(nextCustomer);
-                indexOffset++;
-            }
-            routes.add(subRoute);
-        }
-        return routes;
-    }
-
     // FIXME: Maybe we should use precalculated distances here, for the fastness.
     private static double distanceFunction(int x1, int y1, int x2, int y2) {
         int dx = x1-x2;
         int dy = y1-y2;
 
         return Math.sqrt(dx*dx + dy*dy);
+    }
+
+    public void setPenaltyPer1Lateness(int penaltyPer1Lateness) {
+        this.penaltyPer1Lateness = penaltyPer1Lateness;
     }
 }

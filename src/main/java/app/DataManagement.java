@@ -14,7 +14,6 @@ public class DataManagement {
     private DataManagement(){
     }
 
-    // TODO: Call this at an appropriate time
     public static DataInstance readData() {
         // See: https://stackoverflow.com/questions/3861989/preferred-way-of-loading-resources-in-java
         URL dataURL = Thread.currentThread().getContextClassLoader().getResource(Configuration.INSTANCE.dataName);

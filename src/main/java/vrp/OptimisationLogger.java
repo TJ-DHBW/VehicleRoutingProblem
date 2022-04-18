@@ -3,7 +3,6 @@ package vrp;
 import app.Configuration;
 import app.DataInstance;
 import evolution.GeneticAlgorithm;
-import evolution.Individuum;
 import evolution.crossover.CrossoverType;
 import evolution.mutation.MutationType;
 import evolution.selection.SelectionType;
@@ -44,17 +43,18 @@ public class OptimisationLogger {
         // TODO: Logging
     }
 
-    // TODO: this should print the subRoutes of one route, not all routes
     private void writeRouteManagement(BufferedWriter writer) throws IOException {
-        ArrayList<Individuum<Route, Customer>> individuums = geneticAlgorithm.getPopulation().getIndividuums();
-        String[] lines = new String[individuums.size()+1];
+        ArrayList<Customer> championGenes = this.geneticAlgorithm.getPopulation().getChampion().getGenotype().getGenes();
+        ArrayList<ArrayList<Customer>> subRoutes = Route.splitToSubRoutes(championGenes, dataInstance.vehiclesCapacity());
+
+        String[] lines = new String[championGenes.size()+1];
         lines[0] = "[Route Management]";
 
-        for (int i = 0; i < individuums.size(); i++) {
-            Route currentRoute = individuums.get(i).getGenotype();
+        for (int i = 0; i < subRoutes.size(); i++) {
+            ArrayList<Customer> currentSubRoute = subRoutes.get(i);
             StringBuilder routeLine = new StringBuilder();
             routeLine.append("Route #").append(i).append(" |");
-            for (Customer customer : currentRoute.getGenes()){
+            for (Customer customer : currentSubRoute) {
                 routeLine.append(" ").append(customer.id());
             }
             lines[i+1] = routeLine.toString();
