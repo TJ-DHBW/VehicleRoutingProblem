@@ -16,9 +16,10 @@ public enum Configuration {
 
     public final String dataName = "data.txt";
     // TODO: Set the log path
-    public final Path logPath = Path.of("");
+    public final Path logPath = Path.of("./log.txt");
 
     public final VRPMode vrpMode = VRPMode.CVRP;
+    public final boolean continuousFitnessValues = true;
 
     // TODO validate the rates
     /**

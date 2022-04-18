@@ -1,5 +1,6 @@
 package evolution;
 
+import app.Configuration;
 import evolution.crossover.CrossoverStrategy;
 import evolution.mutation.MutationStrategy;
 import evolution.selection.SelectionStrategy;
@@ -43,6 +44,11 @@ public class GeneticAlgorithm<T extends IGenotype<U>, U extends IGene> {
 
         while (generationCount < maxGenerationCount) {
             generationCount++;
+
+            if (Configuration.INSTANCE.continuousFitnessValues) {
+                String logString = String.format("Generation: %4d | Best fitness: %4.4g", generationCount, this.population.getChampion().getFitness());
+                System.out.println(logString);
+            }
 
             ArrayList<Individuum<T, U>> matingPool = select(this.population.getIndividuums(), this.selectionSize);
 

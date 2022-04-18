@@ -47,7 +47,7 @@ public class OptimisationLogger {
         ArrayList<Customer> championGenes = this.geneticAlgorithm.getPopulation().getChampion().getGenotype().getGenes();
         ArrayList<ArrayList<Customer>> subRoutes = Route.splitToSubRoutes(championGenes, dataInstance.vehiclesCapacity());
 
-        String[] lines = new String[championGenes.size()+1];
+        String[] lines = new String[subRoutes.size()+1];
         lines[0] = "[Route Management]";
 
         for (int i = 0; i < subRoutes.size(); i++) {
