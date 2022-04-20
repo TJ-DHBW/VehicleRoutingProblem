@@ -32,7 +32,7 @@ public enum Configuration {
     public final double mutationRate = 0.003;
     public final int matingSelectionSize = 16;
     public final int initialPopulationSize = 42;
-    public final int maxGenerationCount = 420;
+    public final int maxGenerationCount = 10000;
     public final int penaltyPer1Lateness = 10;
 
     public final CrossoverType crossoverType = CrossoverType.UPX;

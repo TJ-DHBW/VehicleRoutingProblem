@@ -12,9 +12,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 public class OptimisationLogger {
     private DataInstance dataInstance = null;
@@ -39,8 +39,68 @@ public class OptimisationLogger {
         }
     }
 
-    private void writeDataAnalytics(BufferedWriter writer) {
-        // TODO: Logging
+    private void writeDataAnalytics(BufferedWriter writer) throws IOException {
+        ArrayList<Customer> championGenes = this.geneticAlgorithm.getPopulation().getChampion().getGenotype().getGenes();
+        ArrayList<ArrayList<Customer>> subRoutes = Route.splitToSubRoutes(championGenes, dataInstance.vehiclesCapacity());
+        if (subRoutes.size() <= 0) throw new IllegalStateException("The amount of sub routes should never be zero.");
+
+        List<List<Integer>> routeTimings = subRoutes.stream().map(subRoute -> {
+            int currentTime = 0;
+            for (Customer customer : subRoute) {
+                if (currentTime < customer.readyTime()) {
+                    currentTime = customer.readyTime();
+                }
+                currentTime += customer.serviceTime();
+            }
+            return List.of(subRoute.get(0).readyTime(), currentTime);
+        }).sorted(Comparator.comparingInt(timings -> timings.get(0))).toList();
+        List<Integer> routeLoads = subRoutes.stream().map(subRoute -> subRoute.stream().map(Customer::demand).reduce(0, Integer::sum)).toList();
+        List<Double> routeDistances = subRoutes.stream().map(subRoute -> {
+            Depot depot = dataInstance.depots().get(0);
+            int vehicleX = depot.getX();
+            int vehicleY = depot.getY();
+            double totalDistance = 0.0;
+            for (Customer customer : subRoute) {
+                totalDistance += this.distanceFunction(vehicleX, vehicleY, customer.getX(), customer.getY());
+                vehicleX = customer.getX();
+                vehicleY = customer.getY();
+            }
+            totalDistance += this.distanceFunction(vehicleX, vehicleY, depot.getX(), depot.getY());
+            return totalDistance;
+        }).toList();
+
+        // TODO: check if this gives the correct result
+        int totalCountVehicleUsed;
+        if(Configuration.INSTANCE.vrpMode == VRPMode.CVRP) {
+            totalCountVehicleUsed = 1;
+        }else {
+            totalCountVehicleUsed = 0;
+            int[] returnTimes = new int[dataInstance.vehiclesNum()];
+            for (List<Integer> timings : routeTimings) {
+                if (returnTimes[0] == 0) totalCountVehicleUsed++;
+                returnTimes[0] = timings.get(1) + Math.max(0, returnTimes[0]-timings.get(0));
+                Arrays.sort(returnTimes);
+            }
+        }
+        double totalCountVehicleUsedPercent = ((double) totalCountVehicleUsed / dataInstance.vehiclesNum()) * 100;
+        double averageLoadVehicle = ((double) (routeLoads.stream().reduce(0, Integer::sum)) / subRoutes.size());
+        double averageLoadVehiclePercent = (averageLoadVehicle / dataInstance.vehiclesCapacity()) * 100;
+        int minimumLoadVehicle = routeLoads.stream().min(Integer::compareTo).orElse(-1);
+        double minimumLoadVehiclePercent = ((double) minimumLoadVehicle / dataInstance.vehiclesCapacity()) * 100;
+        double totalDistanceTravelled = routeDistances.stream().reduce(0.0, Double::sum);
+        double shortestRouteDistance = routeDistances.stream().min(Double::compareTo).orElse(-1.0);
+        int shortestRoute = routeDistances.indexOf(shortestRouteDistance);
+        double longestRouteDistance = routeDistances.stream().max(Double::compareTo).orElse(-1.0);
+        int longestRoute = routeDistances.indexOf(longestRouteDistance);
+
+        writeLines(writer, new String[]{"Statistics | Data Analytics",
+                "totalCountVehicleUsed = %d (%.2f%%)".formatted(totalCountVehicleUsed, totalCountVehicleUsedPercent),
+                "averageLoadVehicle = %.2f (%.2f%%)".formatted(averageLoadVehicle, averageLoadVehiclePercent),
+                "minimumLoadVehicle = %d (%.2f%%)".formatted(minimumLoadVehicle, minimumLoadVehiclePercent),
+                "totalDistanceTravelled = %.0f".formatted(totalDistanceTravelled),
+                "shortestRoute = #%d (%.0f)".formatted(shortestRoute, shortestRouteDistance),
+                "longestRoute = #%d (%.0f)".formatted(longestRoute, longestRouteDistance)
+        });
     }
 
     private void writeRouteManagement(BufferedWriter writer) throws IOException {
@@ -53,7 +113,7 @@ public class OptimisationLogger {
         for (int i = 0; i < subRoutes.size(); i++) {
             ArrayList<Customer> currentSubRoute = subRoutes.get(i);
             StringBuilder routeLine = new StringBuilder();
-            routeLine.append("Route #").append(i).append(" |");
+            routeLine.append("Route #").append(i+1).append(" |");
             for (Customer customer : currentSubRoute) {
                 routeLine.append(" ").append(customer.id());
             }
@@ -121,6 +181,12 @@ public class OptimisationLogger {
             writer.write(line);
             writer.newLine();
         }
+    }
+
+    private double distanceFunction(int currentX, int currentY, int destinationX, int destinationY) {
+        int dx = currentX-destinationX;
+        int dy = currentY-destinationY;
+        return Math.sqrt(dx*dx+dy*dy);
     }
 
     public void setDataInstance(DataInstance dataInstance) {
