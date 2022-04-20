@@ -67,8 +67,8 @@ public class FitnessRoute {
             int vehicleY = depotY;
 
             for (Customer customer : subRoute) {
-                if (currentTime > customer.dueDate()) {
-                    totalFitness += penaltyPer1Lateness * (currentTime-customer.dueDate());
+                if (currentTime > customer.dueDate()-customer.serviceTime()) {
+                    totalFitness += penaltyPer1Lateness * (currentTime - (customer.dueDate()-customer.serviceTime()));
                 }else if (currentTime < customer.readyTime()) {
                     currentTime = customer.readyTime();
                 }
