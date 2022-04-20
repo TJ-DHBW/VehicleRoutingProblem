@@ -16,33 +16,29 @@ public class FitnessRoute {
 
     // TODO: Test fitness function for VRP
     public double nonTimeWindow(ArrayList<Customer> route){
-        if (dataInstance.depots().size() < 1) throw new IllegalStateException("Can not calculate fitness for a route without a depot");
+        if (dataInstance.getDepots().size() < 1) throw new IllegalStateException("Can not calculate fitness for a route without a depot");
 
         double totalDistance = 0;
 
-        int vehicleCapacity = dataInstance.vehiclesCapacity();
-        int depotX = dataInstance.depots().get(0).getX();
-        int depotY = dataInstance.depots().get(0).getY();
+        int vehicleCapacity = dataInstance.getVehiclesCapacity();
+        int depotId = dataInstance.getDepots().get(0).getId();
 
-        int vehicleX = depotX;
-        int vehicleY = depotY;
+        int currentId = depotId;
         int vehicleSupplies = vehicleCapacity;
 
         for (Customer nextCustomer : route){
             if (nextCustomer.demand() > vehicleSupplies) {
-                totalDistance += distanceFunction(vehicleX, vehicleY, depotX, depotY);
-                vehicleX = depotX;
-                vehicleY = depotY;
+                totalDistance += dataInstance.getDistanceMatrix()[currentId][depotId];
+                currentId = depotId;
                 vehicleSupplies = vehicleCapacity;
             }
 
-            totalDistance += distanceFunction(vehicleX, vehicleY, nextCustomer.getX(), nextCustomer.getY());
-            vehicleX = nextCustomer.getX();
-            vehicleY = nextCustomer.getY();
+            totalDistance += dataInstance.getDistanceMatrix()[currentId][nextCustomer.getId()];
+            currentId = nextCustomer.getId();
             vehicleSupplies -= nextCustomer.demand();
         }
 
-        totalDistance += distanceFunction(vehicleX, vehicleY, depotX, depotY);
+        totalDistance += dataInstance.getDistanceMatrix()[currentId][depotId];
 
         return totalDistance;
     }
@@ -50,48 +46,37 @@ public class FitnessRoute {
     // TODO: This might be possible faster and better (especially the timing stuff)
     // TODO: Test this
     public double timeWindow(ArrayList<Customer> route){
-        if (dataInstance.depots().size() < 1) throw new IllegalStateException("Can not calculate fitness for a route without a depot");
+        if (dataInstance.getDepots().size() < 1) throw new IllegalStateException("Can not calculate fitness for a route without a depot");
 
         double totalFitness = 0;
 
-        int depotX = dataInstance.depots().get(0).getX();
-        int depotY = dataInstance.depots().get(0).getY();
+        int depotId = dataInstance.getDepots().get(0).getId();
 
-        ArrayList<ArrayList<Customer>> routes = Route.splitToSubRoutes(route, dataInstance.vehiclesCapacity());
+        ArrayList<ArrayList<Customer>> routes = Route.splitToSubRoutes(route, dataInstance.getVehiclesCapacity());
         routes.sort(Comparator.comparingInt(subRoute -> subRoute.get(0).readyTime()));
 
-        int[] vehicleReadyTimes = new int[dataInstance.vehiclesNum()];
+        int[] vehicleReadyTimes = new int[dataInstance.getVehiclesNum()];
         for (ArrayList<Customer> subRoute : routes) {
             int currentTime = vehicleReadyTimes[0];
-            int vehicleX = depotX;
-            int vehicleY = depotY;
+            int currentId = depotId;
 
-            for (Customer customer : subRoute) {
-                if (currentTime > customer.dueDate()-customer.serviceTime()) {
-                    totalFitness += penaltyPer1Lateness * (currentTime - (customer.dueDate()-customer.serviceTime()));
-                }else if (currentTime < customer.readyTime()) {
-                    currentTime = customer.readyTime();
+            for (Customer nextCustomer : subRoute) {
+                if (currentTime > nextCustomer.dueDate()-nextCustomer.serviceTime()) {
+                    totalFitness += penaltyPer1Lateness * (currentTime - (nextCustomer.dueDate()-nextCustomer.serviceTime()));
+                }else if (currentTime < nextCustomer.readyTime()) {
+                    currentTime = nextCustomer.readyTime();
                 }
-                currentTime += customer.serviceTime();
-                totalFitness += distanceFunction(vehicleX, vehicleY, customer.getX(), customer.getY());
-                vehicleX = customer.getX();
-                vehicleY = customer.getY();
+                currentTime += nextCustomer.serviceTime();
+                totalFitness += dataInstance.getDistanceMatrix()[currentId][nextCustomer.getId()];
+                currentId = nextCustomer.getId();
             }
 
-            totalFitness += distanceFunction(vehicleX, vehicleY, depotX, depotY);
+            totalFitness += dataInstance.getDistanceMatrix()[currentId][depotId];
             vehicleReadyTimes[0] = currentTime;
             Arrays.sort(vehicleReadyTimes);
         }
 
         return totalFitness;
-    }
-
-    // FIXME: Maybe we should use precalculated distances here, for the fastness.
-    private static double distanceFunction(int x1, int y1, int x2, int y2) {
-        int dx = x1-x2;
-        int dy = y1-y2;
-
-        return Math.sqrt(dx*dx + dy*dy);
     }
 
     public void setPenaltyPer1Lateness(int penaltyPer1Lateness) {

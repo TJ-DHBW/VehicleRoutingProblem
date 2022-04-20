@@ -15,6 +15,7 @@ import java.util.function.Function;
 
 public class Application {
     // TODO: Do we need to implement Elitism?
+    // TODO: We might have implemented the stuff in a way that was not intended.
 
     public static void main(String[] args) {
         DataInstance ukraineData = DataManagement.readData();
@@ -38,7 +39,7 @@ public class Application {
             default -> throw new RuntimeException("VRPMode "+Configuration.INSTANCE.vrpMode+" is not yet implemented.");
         };
         geneticAlgorithm.initialize(configInstance.initialPopulationSize,
-                ukraineData.customers(),
+                ukraineData.getCustomers(),
                 Route::new,
                 fitnessFunction);
 

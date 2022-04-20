@@ -14,7 +14,6 @@ import java.nio.file.Path;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 public class OptimisationLogger {
     private DataInstance dataInstance = null;
@@ -41,7 +40,7 @@ public class OptimisationLogger {
 
     private void writeDataAnalytics(BufferedWriter writer) throws IOException {
         ArrayList<Customer> championGenes = this.geneticAlgorithm.getPopulation().getChampion().getGenotype().getGenes();
-        ArrayList<ArrayList<Customer>> subRoutes = Route.splitToSubRoutes(championGenes, dataInstance.vehiclesCapacity());
+        ArrayList<ArrayList<Customer>> subRoutes = Route.splitToSubRoutes(championGenes, dataInstance.getVehiclesCapacity());
         if (subRoutes.size() <= 0) throw new IllegalStateException("The amount of sub routes should never be zero.");
 
         List<List<Integer>> routeTimings = subRoutes.stream().map(subRoute -> {
@@ -56,16 +55,14 @@ public class OptimisationLogger {
         }).sorted(Comparator.comparingInt(timings -> timings.get(0))).toList();
         List<Integer> routeLoads = subRoutes.stream().map(subRoute -> subRoute.stream().map(Customer::demand).reduce(0, Integer::sum)).toList();
         List<Double> routeDistances = subRoutes.stream().map(subRoute -> {
-            Depot depot = dataInstance.depots().get(0);
-            int vehicleX = depot.getX();
-            int vehicleY = depot.getY();
+            int depotId = dataInstance.getDepots().get(0).getId();
+            int currentId = depotId;
             double totalDistance = 0.0;
             for (Customer customer : subRoute) {
-                totalDistance += this.distanceFunction(vehicleX, vehicleY, customer.getX(), customer.getY());
-                vehicleX = customer.getX();
-                vehicleY = customer.getY();
+                totalDistance += dataInstance.getDistanceMatrix()[currentId][customer.getId()];
+                currentId = customer.getId();
             }
-            totalDistance += this.distanceFunction(vehicleX, vehicleY, depot.getX(), depot.getY());
+            totalDistance += dataInstance.getDistanceMatrix()[currentId][depotId];
             return totalDistance;
         }).toList();
 
@@ -75,18 +72,18 @@ public class OptimisationLogger {
             totalCountVehicleUsed = 1;
         }else {
             totalCountVehicleUsed = 0;
-            int[] returnTimes = new int[dataInstance.vehiclesNum()];
+            int[] returnTimes = new int[dataInstance.getVehiclesNum()];
             for (List<Integer> timings : routeTimings) {
                 if (returnTimes[0] == 0) totalCountVehicleUsed++;
                 returnTimes[0] = timings.get(1) + Math.max(0, returnTimes[0]-timings.get(0));
                 Arrays.sort(returnTimes);
             }
         }
-        double totalCountVehicleUsedPercent = ((double) totalCountVehicleUsed / dataInstance.vehiclesNum()) * 100;
+        double totalCountVehicleUsedPercent = ((double) totalCountVehicleUsed / dataInstance.getVehiclesNum()) * 100;
         double averageLoadVehicle = ((double) (routeLoads.stream().reduce(0, Integer::sum)) / subRoutes.size());
-        double averageLoadVehiclePercent = (averageLoadVehicle / dataInstance.vehiclesCapacity()) * 100;
+        double averageLoadVehiclePercent = (averageLoadVehicle / dataInstance.getVehiclesCapacity()) * 100;
         int minimumLoadVehicle = routeLoads.stream().min(Integer::compareTo).orElse(-1);
-        double minimumLoadVehiclePercent = ((double) minimumLoadVehicle / dataInstance.vehiclesCapacity()) * 100;
+        double minimumLoadVehiclePercent = ((double) minimumLoadVehicle / dataInstance.getVehiclesCapacity()) * 100;
         double totalDistanceTravelled = routeDistances.stream().reduce(0.0, Double::sum);
         double shortestRouteDistance = routeDistances.stream().min(Double::compareTo).orElse(-1.0);
         int shortestRoute = routeDistances.indexOf(shortestRouteDistance);
@@ -105,7 +102,7 @@ public class OptimisationLogger {
 
     private void writeRouteManagement(BufferedWriter writer) throws IOException {
         ArrayList<Customer> championGenes = this.geneticAlgorithm.getPopulation().getChampion().getGenotype().getGenes();
-        ArrayList<ArrayList<Customer>> subRoutes = Route.splitToSubRoutes(championGenes, dataInstance.vehiclesCapacity());
+        ArrayList<ArrayList<Customer>> subRoutes = Route.splitToSubRoutes(championGenes, dataInstance.getVehiclesCapacity());
 
         String[] lines = new String[subRoutes.size()+1];
         lines[0] = "[Route Management]";
@@ -152,10 +149,10 @@ public class OptimisationLogger {
     }
 
     private void writeDemandManagement(BufferedWriter writer) throws IOException {
-        int totalCountVehicle = this.dataInstance.vehiclesNum();
-        int maximumCapacityVehicle = this.dataInstance.vehiclesCapacity();
-        int totalCountCustomer = this.dataInstance.customers().size();
-        int totalSumDemand = this.dataInstance.customers().stream().map(Customer::demand).reduce(0, Integer::sum);
+        int totalCountVehicle = this.dataInstance.getVehiclesNum();
+        int maximumCapacityVehicle = this.dataInstance.getVehiclesCapacity();
+        int totalCountCustomer = this.dataInstance.getCustomers().size();
+        int totalSumDemand = this.dataInstance.getCustomers().stream().map(Customer::demand).reduce(0, Integer::sum);
 
         writeLines(writer, new String[]{"[Demand Management]",
                 "totalCountVehicle = "+totalCountVehicle,
@@ -181,12 +178,6 @@ public class OptimisationLogger {
             writer.write(line);
             writer.newLine();
         }
-    }
-
-    private double distanceFunction(int currentX, int currentY, int destinationX, int destinationY) {
-        int dx = currentX-destinationX;
-        int dy = currentY-destinationY;
-        return Math.sqrt(dx*dx+dy*dy);
     }
 
     public void setDataInstance(DataInstance dataInstance) {
