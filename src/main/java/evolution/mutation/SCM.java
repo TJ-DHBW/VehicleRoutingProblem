@@ -1,5 +1,7 @@
 package evolution.mutation;
 
+import evolution.IGene;
+import evolution.IGenotype;
 import evolution.Individuum;
 
 import java.util.*;
@@ -10,29 +12,25 @@ public class SCM extends MutationStrategy{
     public SCM(Random randomGenerator) {
         this.randomGenerator = randomGenerator;
     }
+    // TODO Test this implementation
 
     @Override
-    void mutate(Individuum<?, ?> individuum) {
-        mutateHelper(individuum);
-    }
-
-    // TODO Test this implementation
-    private <T> void mutateHelper(Individuum<?, ?> individuum){
-        int sizeOfScramble = individuum.getGenotype().getGenes().size()/5;
-        int placeOfScramble = randomGenerator.nextInt(individuum.getGenotype().getGenes().size()-sizeOfScramble-1);
+    protected <T extends IGenotype<U>, U extends IGene> void mutateInner(Individuum<T, U> i) {
+        int sizeOfScramble = i.getGenotype().getGenes().size()/5;
+        int placeOfScramble = randomGenerator.nextInt(i.getGenotype().getGenes().size()-sizeOfScramble-1);
 
         @SuppressWarnings("unchecked")
-        ArrayList<T> genes = (ArrayList<T>) individuum.getGenotype().getGenes();
-        ArrayList<T> subGenes = new ArrayList<>();
-        for(int i = placeOfScramble; i < placeOfScramble+sizeOfScramble; i++){
-            subGenes.add((T) individuum.getGenotype().getGenes().get(i));
+        ArrayList<U> genes = i.getGenotype().getGenes();
+        ArrayList<U> subGenes = new ArrayList<>();
+        for(int j = placeOfScramble; j < placeOfScramble+sizeOfScramble; j++){
+            subGenes.add((U) i.getGenotype().getGenes().get(j));
         }
-        List<T> geneList = new ArrayList<>(subGenes);
+        List<U> geneList = new ArrayList<>(subGenes);
         while (geneList.equals(subGenes)){
             Collections.shuffle(subGenes);
         }
-        for(int i = placeOfScramble; i < placeOfScramble+sizeOfScramble; i++) {
-            genes.set(i, subGenes.get(i - placeOfScramble));
+        for(int j = placeOfScramble; j < placeOfScramble+sizeOfScramble; j++) {
+            genes.set(j, subGenes.get(j - placeOfScramble));
         }
     }
 }
