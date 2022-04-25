@@ -46,7 +46,7 @@ public class GeneticAlgorithm<T extends IGenotype<U>, U extends IGene> {
             generationCount++;
 
             if (Configuration.INSTANCE.continuousFitnessValues) {
-                String logString = String.format("Generation: %4d | Best fitness: %4.4g", generationCount, this.population.getChampion().getFitness());
+                String logString = String.format("Generation: %4d | Best fitness: %5.5g", generationCount, this.population.getChampion().getFitness());
                 System.out.println(logString);
             }
 

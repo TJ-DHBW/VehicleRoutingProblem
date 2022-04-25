@@ -20,7 +20,6 @@ public class Individuum<T extends IGenotype<U>, U extends IGene> {
         return fitness;
     }
 
-    // FIXME: This might crash. Is there a way to ensure that the cast succeeds?
     public Individuum<T, U> createCopy(){
         @SuppressWarnings("unchecked")
         T genotypeCopy = (T) this.genotype.createCopy();

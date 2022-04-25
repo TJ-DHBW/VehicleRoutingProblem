@@ -22,7 +22,6 @@ public class Population<T extends IGenotype<U>, U extends IGene> {
         this.sort();
 
         for (int i = 0; i < numToExterminate; i++) {
-            // FIXME: I dont like that we use the Configuration here.
             double randomNum = Configuration.INSTANCE.randomGenerator.nextDouble();
             int indexToExterminate = (int) ((this.individuums.size()-1) - (randomNum * numToExterminate));
 

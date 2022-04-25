@@ -14,7 +14,6 @@ public class FitnessRoute {
         this.dataInstance = dataInstance;
     }
 
-    // TODO: Test fitness function for VRP
     public double nonTimeWindow(ArrayList<Customer> route){
         if (dataInstance.getDepots().size() < 1) throw new IllegalStateException("Can not calculate fitness for a route without a depot");
 
@@ -44,7 +43,6 @@ public class FitnessRoute {
     }
 
     // TODO: This might be possible faster and better (especially the timing stuff)
-    // TODO: Test this
     public double timeWindow(ArrayList<Customer> route){
         if (dataInstance.getDepots().size() < 1) throw new IllegalStateException("Can not calculate fitness for a route without a depot");
 
