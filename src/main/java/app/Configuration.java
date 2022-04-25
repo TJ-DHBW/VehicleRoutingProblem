@@ -28,9 +28,9 @@ public enum Configuration {
      * Rate of a mutation happening. Between 0.001 and 0.005
      */
     public final double mutationRate = 0.003;
-    public final int matingSelectionSize = 200;
-    public final int initialPopulationSize = 420;
-    public final int maxGenerationCount = 10000;
+    public final int matingSelectionSize = 250;
+    public final int initialPopulationSize = 2250;
+    public final int maxGenerationCount = 1000;
     public final int penaltyPer1Lateness = 50;
 
     public final CrossoverType crossoverType = CrossoverType.HRX;
