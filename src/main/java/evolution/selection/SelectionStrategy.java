@@ -11,7 +11,6 @@ public abstract class SelectionStrategy {
     public abstract <T extends IGenotype<U>, U extends IGene> ArrayList<Individuum<T, U>> select(ArrayList<Individuum<T, U>> selectionPool, int selectionSize);
 
 
-    // TODO: register implementations
     public static SelectionStrategy get(SelectionType selectionType){
         return switch (selectionType){
             case RWS -> new RWS(Configuration.INSTANCE.randomGenerator);

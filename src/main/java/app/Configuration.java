@@ -15,13 +15,11 @@ public enum Configuration {
     public final Random randomGenerator = new MersenneTwisterFast(System.nanoTime());
 
     public final String dataName = "data.txt";
-    // TODO: Set the log path
     public final Path logPath = Path.of("./log.txt");
 
     public final VRPMode vrpMode = VRPMode.CVRP;
     public final boolean continuousFitnessValues = true;
 
-    // TODO validate the rates
     /**
      * Rate of a crossover happening. Between 0.6 and 0.8
      */

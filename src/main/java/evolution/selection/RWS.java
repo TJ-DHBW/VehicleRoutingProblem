@@ -20,7 +20,7 @@ public class RWS extends SelectionStrategy {
 
 
     private <T extends IGenotype<U>, U extends IGene> void addIndividuumByProbability(HashSet<Individuum<T,U>> matingPoolSet, ArrayList<Individuum<T,U>> matingPool, Double totalFitness) {
-        Double randomSelectValue = randomGenerator.nextDouble()*totalFitness;
+        double randomSelectValue = randomGenerator.nextDouble()*totalFitness;
         double cumulativeFitness = 0.0;
         for(Individuum<T, U> individuum : matingPool){
             cumulativeFitness += individuum.getFitness();
@@ -37,10 +37,7 @@ public class RWS extends SelectionStrategy {
         if (selectionPool.size() < 1) return selectionPool;
 
         HashSet<Individuum<T, U>> matingPoolSet = new HashSet<>();
-        Double totalFitness = 0.0;
-        for(Individuum<T, U> individuum : selectionPool){
-            totalFitness += individuum.getFitness();
-        }
+        double totalFitness = selectionPool.stream().map(Individuum::getFitness).reduce(0.0, Double::sum);
 
         while(matingPoolSet.size() <  selectionSize){
             addIndividuumByProbability(matingPoolSet, selectionPool, totalFitness);

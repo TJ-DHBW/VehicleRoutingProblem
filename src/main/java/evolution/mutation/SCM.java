@@ -19,11 +19,10 @@ public class SCM extends MutationStrategy{
         int sizeOfScramble = Math.max(i.getGenotype().getGenes().size()/2,2);
         int placeOfScramble = randomGenerator.nextInt(i.getGenotype().getGenes().size()-sizeOfScramble-1);
 
-        @SuppressWarnings("unchecked")
         ArrayList<U> genes = i.getGenotype().getGenes();
         ArrayList<U> subGenes = new ArrayList<>();
         for(int j = placeOfScramble; j < placeOfScramble+sizeOfScramble; j++){
-            subGenes.add((U) i.getGenotype().getGenes().get(j));
+            subGenes.add(i.getGenotype().getGenes().get(j));
         }
         List<U> geneList = new ArrayList<>(subGenes);
         while (geneList.equals(subGenes)){

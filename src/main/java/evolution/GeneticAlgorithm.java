@@ -66,7 +66,6 @@ public class GeneticAlgorithm<T extends IGenotype<U>, U extends IGene> {
         return this.selectionStrategy.select(individuums, selectionSize);
     }
 
-    // TODO: Probably rename :(
     private ArrayList<Individuum<T, U>> makeLoveNotWar(List<Individuum<T, U>> matingPool){
         Collections.shuffle(matingPool);
         ArrayList<Individuum<T, U>> children = new ArrayList<>();
