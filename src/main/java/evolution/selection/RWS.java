@@ -1,10 +1,11 @@
 package evolution.selection;
 
+import evolution.IGene;
+import evolution.IGenotype;
 import evolution.Individuum;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.Random;
 
 public class RWS extends SelectionStrategy {
@@ -16,15 +17,29 @@ public class RWS extends SelectionStrategy {
 
     //TODO untested
 
+
+
+    private <T extends IGenotype<U>, U extends IGene> void addIndividuumByProbability(HashSet<Individuum<T,U>> matingPoolSet, ArrayList<Individuum<T,U>> matingPool, Double totalFitness) {
+        Double randomSelectValue = randomGenerator.nextDouble()*totalFitness;
+        double cumulativeFitness = 0.0;
+        for(Individuum<T, U> individuum : matingPool){
+            cumulativeFitness += individuum.getFitness();
+            if(cumulativeFitness >= randomSelectValue){
+                matingPoolSet.add(individuum);
+                return;
+            }
+        }
+    }
+
     @Override
-    ArrayList<Individuum<?, ?>> select(ArrayList<Individuum<?, ?>> selectionPool, int selectionSize) {
-        ArrayList<Individuum<?, ?>> matingPool = new ArrayList<>();
+    public <T extends IGenotype<U>, U extends IGene> ArrayList<Individuum<T, U>> select(ArrayList<Individuum<T, U>> selectionPool, int selectionSize) {
+        ArrayList<Individuum<T, U>> matingPool = new ArrayList<>();
 
         if (selectionPool.size() < 1) return matingPool;
 
-        HashSet<Individuum<?, ?>> matingPoolSet = new HashSet<>();
+        HashSet<Individuum<T, U>> matingPoolSet = new HashSet<>();
         Double totalFitness = 0.0;
-        for(Individuum<?, ?> individuum : matingPool){
+        for(Individuum<T, U> individuum : matingPool){
             totalFitness += individuum.getFitness();
         }
 
@@ -32,17 +47,5 @@ public class RWS extends SelectionStrategy {
             addIndividuumByProbability(matingPoolSet, matingPool, totalFitness);
         }
         return matingPool;
-    }
-
-    private void addIndividuumByProbability(HashSet<Individuum<?,?>> matingPoolSet, ArrayList<Individuum<?,?>> matingPool, Double totalFitness) {
-        Double randomSelectValue = randomGenerator.nextDouble()*totalFitness;
-        double cumulativeFitness = 0.0;
-        for(Individuum<?, ?> individuum : matingPool){
-            cumulativeFitness += individuum.getFitness();
-            if(cumulativeFitness >= randomSelectValue){
-                matingPoolSet.add(individuum);
-                return;
-            }
-        }
     }
 }
