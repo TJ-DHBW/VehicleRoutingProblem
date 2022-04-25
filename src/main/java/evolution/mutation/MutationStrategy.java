@@ -1,11 +1,23 @@
 package evolution.mutation;
 
 import app.Configuration;
+import evolution.IGene;
+import evolution.IGenotype;
 import evolution.Individuum;
 
 public abstract class MutationStrategy {
-    abstract void mutate(Individuum<?, ?> i);
+    private int mutationCount = 0;
 
+    public <T extends IGenotype<U>, U extends IGene> void mutate(Individuum<T, U> i){
+        mutationCount++;
+        mutateInner(i);
+    }
+
+    protected abstract <T extends IGenotype<U>, U extends IGene> void mutateInner(Individuum<T, U> i);
+
+    public int getMutationCount() {
+        return mutationCount;
+    }
 
     // TODO: register implementations
     public static MutationStrategy get(MutationType mutationType){

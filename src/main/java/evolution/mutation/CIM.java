@@ -1,5 +1,7 @@
 package evolution.mutation;
 
+import evolution.IGene;
+import evolution.IGenotype;
 import evolution.Individuum;
 
 import java.util.ArrayList;
@@ -8,24 +10,18 @@ import java.util.Random;
 public class CIM extends MutationStrategy{
     private final Random randomGenerator;
 
-    protected CIM(Random randomGenerator) {
+    public CIM(Random randomGenerator) {
         this.randomGenerator = randomGenerator;
     }
 
     @Override
-    void mutate(Individuum<?, ?> individuum) {
-        mutateHelper(individuum);
-    }
-
-    // TODO Test this implementation
-    private <T> void mutateHelper(Individuum<?, ?> individuum){
-        @SuppressWarnings("unchecked")
-        ArrayList<T> genes = (ArrayList<T>) individuum.getGenotype().getGenes();
+    public <T extends IGenotype<U>, U extends IGene> void mutateInner(Individuum<T, U> individuum) {
+        ArrayList<U> genes = individuum.getGenotype().getGenes();
         int geneCount = genes.size();
 
         int inversionPoint = randomGenerator.nextInt(geneCount);
 
-        ArrayList<T> genesOriginalOrder = new ArrayList<>(genes);
+        ArrayList<U> genesOriginalOrder = new ArrayList<>(genes);
 
         for (int i = 0; i <= inversionPoint; i++) {
             genes.set(i, genesOriginalOrder.get(inversionPoint-i));
