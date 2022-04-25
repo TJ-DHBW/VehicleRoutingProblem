@@ -19,11 +19,10 @@ public abstract class MutationStrategy {
         return mutationCount;
     }
 
-    // TODO: register implementations
     public static MutationStrategy get(MutationType mutationType){
         return switch (mutationType){
             case CIM -> new CIM(Configuration.INSTANCE.randomGenerator);
-            case SCM -> throw new RuntimeException("SCM is not implemented yet.");
+            case SCM -> new SCM(Configuration.INSTANCE.randomGenerator);
 
             default -> throw new RuntimeException(mutationType+" is not implemented yet.");
         };

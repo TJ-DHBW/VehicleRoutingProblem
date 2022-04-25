@@ -33,19 +33,18 @@ public class RWS extends SelectionStrategy {
 
     @Override
     public <T extends IGenotype<U>, U extends IGene> ArrayList<Individuum<T, U>> select(ArrayList<Individuum<T, U>> selectionPool, int selectionSize) {
-        ArrayList<Individuum<T, U>> matingPool = new ArrayList<>();
 
-        if (selectionPool.size() < 1) return matingPool;
+        if (selectionPool.size() < 1) return selectionPool;
 
         HashSet<Individuum<T, U>> matingPoolSet = new HashSet<>();
         Double totalFitness = 0.0;
-        for(Individuum<T, U> individuum : matingPool){
+        for(Individuum<T, U> individuum : selectionPool){
             totalFitness += individuum.getFitness();
         }
 
         while(matingPoolSet.size() <  selectionSize){
-            addIndividuumByProbability(matingPoolSet, matingPool, totalFitness);
+            addIndividuumByProbability(matingPoolSet, selectionPool, totalFitness);
         }
-        return matingPool;
+        return new ArrayList<>(matingPoolSet);
     }
 }

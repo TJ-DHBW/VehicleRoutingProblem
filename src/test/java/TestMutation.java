@@ -1,6 +1,7 @@
 import evolution.Individuum;
 import evolution.mutation.CIM;
 import evolution.mutation.MutationStrategy;
+import evolution.mutation.SCM;
 import org.junit.jupiter.api.*;
 import random.MersenneTwisterFast;
 import vrp.Customer;
@@ -8,6 +9,7 @@ import vrp.Route;
 
 import java.util.*;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -21,9 +23,11 @@ public class TestMutation {
     public void beforeEach(){
         Random randomCIM = mock(MersenneTwisterFast.class);
         when(randomCIM.nextInt(anyInt())).thenReturn(0);
-        // TODO: Add other implementations
+        Random randomSCM = mock(MersenneTwisterFast.class);
+        when(randomSCM.nextInt(anyInt())).thenReturn(1,0);
         this.mutationStrategies = new MutationStrategy[]{
-                new CIM(randomCIM)
+                new CIM(randomCIM),
+                new SCM(randomSCM)
         };
 
         customers = new Customer[]{

@@ -1,3 +1,5 @@
+import app.DataInstance;
+import app.DataManagement;
 import evolution.Individuum;
 import evolution.selection.SelectionStrategy;
 import evolution.selection.TOS;
@@ -25,7 +27,9 @@ public class TestSelection {
     public void beforeEach() {
         Random randomTOS = mock(MersenneTwisterFast.class);
         when(randomTOS.nextInt(anyInt())).thenReturn(0);
-        // TODO: Add other implementations
+        Random randomRWS = mock(MersenneTwisterFast.class);
+        when(randomRWS.nextInt(anyInt())).thenReturn(0);
+        when(randomRWS.nextDouble()).thenReturn(0.1, 0.5, 0.7, 0.3, 0.9, 0.98);
         this.selectionStrategies = new SelectionStrategy[]{
                 new TOS(randomTOS)
         };
@@ -52,7 +56,8 @@ public class TestSelection {
     @Order(1)
     @DisplayName("depot has been initialised completely")
     public void depotComplete() {
-        // TODO: what the hell are we supposed to do here?
+        DataInstance ukraineData = DataManagement.readData();
+        Assertions.assertTrue(ukraineData.getDepots().size() > 0);
     }
 
     @Test

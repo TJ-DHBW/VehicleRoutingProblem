@@ -1,5 +1,6 @@
 import evolution.Individuum;
 import evolution.crossover.CrossoverStrategy;
+import evolution.crossover.HRX;
 import evolution.crossover.UPX;
 import org.junit.jupiter.api.*;
 import random.MersenneTwisterFast;
@@ -21,9 +22,11 @@ public class TestCrossover {
     public void beforeEach(){
         Random randomUPX = mock(MersenneTwisterFast.class);
         when(randomUPX.nextDouble()).thenReturn(0.9, 0.0);
-        // TODO: Add other implementations
+        Random randomHRX = mock(MersenneTwisterFast.class);
+        when(randomHRX.nextInt()).thenReturn(1, 0);
         this.crossoverStrategies = new CrossoverStrategy[]{
-                new UPX(randomUPX, 0.5)
+                new UPX(randomUPX, 0.5),
+                new HRX(randomHRX)
         };
 
         customers = new Customer[]{

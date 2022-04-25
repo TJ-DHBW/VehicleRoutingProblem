@@ -14,7 +14,7 @@ public abstract class SelectionStrategy {
     // TODO: register implementations
     public static SelectionStrategy get(SelectionType selectionType){
         return switch (selectionType){
-            case RWS -> throw new RuntimeException("RWS is not implemented yet.");
+            case RWS -> new RWS(Configuration.INSTANCE.randomGenerator);
             case TOS -> new TOS(Configuration.INSTANCE.randomGenerator);
 
             default -> throw new RuntimeException(selectionType+" is not implemented yet.");

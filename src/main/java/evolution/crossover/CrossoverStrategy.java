@@ -20,10 +20,9 @@ public abstract class CrossoverStrategy {
         return crossoverCount;
     }
 
-    // TODO: register implementations
     public static CrossoverStrategy get(CrossoverType crossoverType){
         return switch (crossoverType){
-            case HRX -> throw new RuntimeException("HRX is not implemented yet.");
+            case HRX -> new HRX(Configuration.INSTANCE.randomGenerator);
             case UPX -> new UPX(Configuration.INSTANCE.randomGenerator, 0.7);
 
             default -> throw new RuntimeException(crossoverType+" is not implemented yet.");

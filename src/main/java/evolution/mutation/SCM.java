@@ -16,7 +16,7 @@ public class SCM extends MutationStrategy{
 
     @Override
     protected <T extends IGenotype<U>, U extends IGene> void mutateInner(Individuum<T, U> i) {
-        int sizeOfScramble = i.getGenotype().getGenes().size()/5;
+        int sizeOfScramble = Math.max(i.getGenotype().getGenes().size()/2,2);
         int placeOfScramble = randomGenerator.nextInt(i.getGenotype().getGenes().size()-sizeOfScramble-1);
 
         @SuppressWarnings("unchecked")
