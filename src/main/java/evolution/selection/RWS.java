@@ -15,7 +15,6 @@ public class RWS extends SelectionStrategy {
         this.randomGenerator = randomGenerator;
     }
 
-    //TODO untested
 
 
 

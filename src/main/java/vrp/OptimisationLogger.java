@@ -66,7 +66,6 @@ public class OptimisationLogger {
             return totalDistance;
         }).toList();
 
-        // TODO: check if this gives the correct result
         int totalCountVehicleUsed;
         if(Configuration.INSTANCE.vrpMode == VRPMode.CVRP) {
             totalCountVehicleUsed = 1;

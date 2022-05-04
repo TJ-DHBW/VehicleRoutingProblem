@@ -12,7 +12,6 @@ public class SCM extends MutationStrategy{
     public SCM(Random randomGenerator) {
         this.randomGenerator = randomGenerator;
     }
-    // TODO Test this implementation
 
     @Override
     protected <T extends IGenotype<U>, U extends IGene> void mutateInner(Individuum<T, U> i) {

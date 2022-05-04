@@ -13,7 +13,6 @@ public class HRX extends CrossoverStrategy{
     public HRX(Random randomGenerator) {
         this.randomGenerator = randomGenerator;
     }
-    //TODO test
 
     private <T extends IGenotype<U>, U extends IGene> Individuum<T, U> getChildWithCossover(Individuum<T, U> parent1, Individuum<T, U> parent2) {
         Individuum<T, U> returnIndividuum = parent1.createCopy();
@@ -29,7 +28,7 @@ public class HRX extends CrossoverStrategy{
                 if(remainingGenes.size() == 0){
                     return mapCrossoverGenesToIndividuum(returnIndividuum, crossedOverGenes);
                 }
-                currentGene = (U) getRandomGeneNotUsed(remainingGenes);
+                currentGene = getRandomGeneNotUsed(remainingGenes);
                 crossedOverGenes.add(currentGene);
                 geneSet.add(currentGene);
             }

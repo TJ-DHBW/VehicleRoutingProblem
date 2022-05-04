@@ -42,7 +42,6 @@ public class FitnessRoute {
         return totalDistance;
     }
 
-    // TODO: This might be possible faster and better (especially the timing stuff)
     public double timeWindow(ArrayList<Customer> route){
         if (dataInstance.getDepots().size() < 1) throw new IllegalStateException("Can not calculate fitness for a route without a depot");
 
