@@ -22,7 +22,7 @@ public class RWS extends SelectionStrategy {
         double randomSelectValue = randomGenerator.nextDouble()*totalFitness;
         double cumulativeFitness = 0.0;
         for(Individuum<T, U> individuum : matingPool){
-            cumulativeFitness += individuum.getFitness();
+            cumulativeFitness += 1/individuum.getFitness();
             if(cumulativeFitness >= randomSelectValue){
                 matingPoolSet.add(individuum);
                 return;
@@ -36,7 +36,10 @@ public class RWS extends SelectionStrategy {
         if (selectionPool.size() < 1) return selectionPool;
 
         HashSet<Individuum<T, U>> matingPoolSet = new HashSet<>();
-        double totalFitness = selectionPool.stream().map(Individuum::getFitness).reduce(0.0, Double::sum);
+        double totalFitness = 0.0;
+        for(Individuum<T, U> individuum : selectionPool){
+            totalFitness += 1/individuum.getFitness();
+        }
 
         while(matingPoolSet.size() <  selectionSize){
             addIndividuumByProbability(matingPoolSet, selectionPool, totalFitness);
