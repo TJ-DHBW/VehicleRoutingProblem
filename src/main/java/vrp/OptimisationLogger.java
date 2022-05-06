@@ -122,8 +122,7 @@ public class OptimisationLogger {
     private void writeGeneticAlgorithm(BufferedWriter writer) throws IOException {
         int maximumNumberIterations = Configuration.INSTANCE.maxGenerationCount;
         int populationSize = Configuration.INSTANCE.initialPopulationSize;
-        // TODO: getElitism
-        boolean isElitismEnabled = false;
+        boolean isElitismEnabled = Configuration.INSTANCE.useElitism;
         SelectionType selectionType = Configuration.INSTANCE.selectionType;
         String selectionName = selectionType.getFullName();
         int k = Configuration.INSTANCE.matingSelectionSize;

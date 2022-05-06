@@ -17,13 +17,20 @@ public class Population<T extends IGenotype<U>, U extends IGene> {
         individuums.sort(Comparator.comparing(Individuum::getFitness));
     }
 
-    public void exterminateStragglers(int numToExterminate){
+    public void exterminateStragglers(int numToExterminate, boolean useElitism){
         if (this.individuums.size() < numToExterminate) throw new RuntimeException("Can not exterminate "+numToExterminate+" individuals from a population of size "+this.individuums.size()+".");
         this.sort();
+
+        int numElites = 0;
+        if (useElitism) numElites = (int) Math.floor(this.individuums.size() * 0.1);
 
         for (int i = 0; i < numToExterminate; i++) {
             double randomNum = Configuration.INSTANCE.randomGenerator.nextDouble();
             int indexToExterminate = (int) ((this.individuums.size()-1) - (randomNum * numToExterminate));
+            if (indexToExterminate < numElites) {
+                indexToExterminate = this.individuums.size() - 1;
+                if (indexToExterminate < numElites) return;
+            }
 
             if (indexToExterminate < 0) {
                 this.individuums.remove(this.individuums.size()-1);

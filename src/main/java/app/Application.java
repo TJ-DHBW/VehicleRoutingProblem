@@ -14,9 +14,6 @@ import java.util.ArrayList;
 import java.util.function.Function;
 
 public class Application {
-    // TODO: Do we need to implement Elitism?
-    // TODO: We may have to invert the fitness values.
-
     public static void main(String[] args) {
         DataInstance ukraineData = DataManagement.readData();
 

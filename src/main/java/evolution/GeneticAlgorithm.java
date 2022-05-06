@@ -56,7 +56,7 @@ public class GeneticAlgorithm<T extends IGenotype<U>, U extends IGene> {
             mutate(children);
 
             int numToExterminate = (int) (this.randomGenerator.nextDouble() * this.population.getIndividuums().size() * 0.1);
-            this.population.exterminateStragglers(numToExterminate);
+            this.population.exterminateStragglers(numToExterminate, Configuration.INSTANCE.useElitism);
 
             this.population.getIndividuums().addAll(children);
         }

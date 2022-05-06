@@ -17,7 +17,7 @@ public enum Configuration {
     public final String dataName = "data.txt";
     public final Path logPath = Path.of("./log.txt");
 
-    public final VRPMode vrpMode = VRPMode.CVRPTW;
+    public final VRPMode vrpMode = VRPMode.CVRP;
     public final boolean continuousFitnessValues = true;
 
     /**
@@ -32,6 +32,7 @@ public enum Configuration {
     public final int initialPopulationSize = 2250;
     public final int maxGenerationCount = 1000;
     public final int penaltyPer1Lateness = 50;
+    public final boolean useElitism = false;
 
     public final CrossoverType crossoverType = CrossoverType.HRX;
     public final MutationType mutationType = MutationType.SCM;
