@@ -67,13 +67,13 @@ public class TestSelection {
     @DisplayName("select an even number of individuals")
     public void evenNumber() {
         for (SelectionStrategy selectionStrategy : this.selectionStrategies) {
-            System.out.println("Testing selectionStrategy: "+selectionStrategy.getClass().getCanonicalName());
+            System.out.println("Testing selectionStrategy: " + selectionStrategy.getClass().getCanonicalName());
 
             ArrayList<Individuum<Route, Customer>> selection = selectionStrategy.select(this.testPopulation, this.testK);
 
             Assertions.assertEquals(0, selection.size() % 2);
 
-            System.out.println("Success: "+selectionStrategy.getClass().getCanonicalName());
+            System.out.println("Success: " + selectionStrategy.getClass().getCanonicalName());
         }
     }
 
@@ -82,7 +82,7 @@ public class TestSelection {
     @DisplayName("selection does not contain duplicates")
     public void noDuplicates() {
         for (SelectionStrategy selectionStrategy : this.selectionStrategies) {
-            System.out.println("Testing selectionStrategy: "+selectionStrategy.getClass().getCanonicalName());
+            System.out.println("Testing selectionStrategy: " + selectionStrategy.getClass().getCanonicalName());
 
             ArrayList<Individuum<Route, Customer>> selection = selectionStrategy.select(this.testPopulation, this.testK);
 
@@ -94,7 +94,7 @@ public class TestSelection {
                 seen.add(individuum);
             }
 
-            System.out.println("Success: "+selectionStrategy.getClass().getCanonicalName());
+            System.out.println("Success: " + selectionStrategy.getClass().getCanonicalName());
         }
     }
 }

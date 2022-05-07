@@ -33,7 +33,7 @@ public class Application {
             case CVRP -> fitnessRoute::nonTimeWindow;
             case CVRPTW -> fitnessRoute::timeWindow;
 
-            default -> throw new RuntimeException("VRPMode "+Configuration.INSTANCE.vrpMode+" is not yet implemented.");
+            default -> throw new RuntimeException("VRPMode " + Configuration.INSTANCE.vrpMode + " is not yet implemented.");
         };
         geneticAlgorithm.initialize(configInstance.initialPopulationSize,
                 ukraineData.getCustomers(),

@@ -10,12 +10,13 @@ public class FitnessRoute {
     private final DataInstance dataInstance;
     private int penaltyPer1Lateness = 10;
 
-    public FitnessRoute(DataInstance dataInstance){
+    public FitnessRoute(DataInstance dataInstance) {
         this.dataInstance = dataInstance;
     }
 
-    public double nonTimeWindow(ArrayList<Customer> route){
-        if (dataInstance.getDepots().size() < 1) throw new IllegalStateException("Can not calculate fitness for a route without a depot");
+    public double nonTimeWindow(ArrayList<Customer> route) {
+        if (dataInstance.getDepots().size() < 1)
+            throw new IllegalStateException("Can not calculate fitness for a route without a depot");
 
         double totalDistance = 0;
 
@@ -25,7 +26,7 @@ public class FitnessRoute {
         int currentId = depotId;
         int vehicleSupplies = vehicleCapacity;
 
-        for (Customer nextCustomer : route){
+        for (Customer nextCustomer : route) {
             if (nextCustomer.demand() > vehicleSupplies) {
                 totalDistance += dataInstance.getDistanceMatrix()[currentId][depotId];
                 currentId = depotId;
@@ -42,8 +43,9 @@ public class FitnessRoute {
         return totalDistance;
     }
 
-    public double timeWindow(ArrayList<Customer> route){
-        if (dataInstance.getDepots().size() < 1) throw new IllegalStateException("Can not calculate fitness for a route without a depot");
+    public double timeWindow(ArrayList<Customer> route) {
+        if (dataInstance.getDepots().size() < 1)
+            throw new IllegalStateException("Can not calculate fitness for a route without a depot");
 
         double totalFitness = 0;
 
@@ -58,9 +60,9 @@ public class FitnessRoute {
             int currentId = depotId;
 
             for (Customer nextCustomer : subRoute) {
-                if (currentTime > nextCustomer.dueDate()-nextCustomer.serviceTime()) {
-                    totalFitness += penaltyPer1Lateness * (currentTime - (nextCustomer.dueDate()-nextCustomer.serviceTime()));
-                }else if (currentTime < nextCustomer.readyTime()) {
+                if (currentTime > nextCustomer.dueDate() - nextCustomer.serviceTime()) {
+                    totalFitness += penaltyPer1Lateness * (currentTime - (nextCustomer.dueDate() - nextCustomer.serviceTime()));
+                } else if (currentTime < nextCustomer.readyTime()) {
                     currentTime = nextCustomer.readyTime();
                 }
                 currentTime += nextCustomer.serviceTime();

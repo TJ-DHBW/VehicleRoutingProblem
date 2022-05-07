@@ -7,9 +7,11 @@ import random.MersenneTwisterFast;
 import vrp.Customer;
 import vrp.Route;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Random;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -20,11 +22,11 @@ public class TestMutation {
     private Customer[] customers;
 
     @BeforeEach
-    public void beforeEach(){
+    public void beforeEach() {
         Random randomCIM = mock(MersenneTwisterFast.class);
         when(randomCIM.nextInt(anyInt())).thenReturn(0);
         Random randomSCM = mock(MersenneTwisterFast.class);
-        when(randomSCM.nextInt(anyInt())).thenReturn(1,0);
+        when(randomSCM.nextInt(anyInt())).thenReturn(1, 0);
         this.mutationStrategies = new MutationStrategy[]{
                 new CIM(randomCIM),
                 new SCM(randomSCM)
@@ -45,7 +47,7 @@ public class TestMutation {
     @DisplayName("mutation should not change tour length")
     public void length() {
         for (MutationStrategy mutationStrategy : this.mutationStrategies) {
-            System.out.println("Testing mutationStrategy: "+mutationStrategy.getClass().getCanonicalName());
+            System.out.println("Testing mutationStrategy: " + mutationStrategy.getClass().getCanonicalName());
 
             Individuum<Route, Customer> testIndividuum = this.templateIndividuum.createCopy();
             int initialLength = testIndividuum.getGenotype().getGenes().size();
@@ -54,7 +56,7 @@ public class TestMutation {
 
             Assertions.assertEquals(initialLength, testIndividuum.getGenotype().getGenes().size());
 
-            System.out.println("Success: "+mutationStrategy.getClass().getCanonicalName());
+            System.out.println("Success: " + mutationStrategy.getClass().getCanonicalName());
         }
     }
 
@@ -63,21 +65,21 @@ public class TestMutation {
     @DisplayName("no duplicate customers should occur in mutated individuals")
     public void duplicates() {
         for (MutationStrategy mutationStrategy : this.mutationStrategies) {
-            System.out.println("Testing mutationStrategy: "+mutationStrategy.getClass().getCanonicalName());
+            System.out.println("Testing mutationStrategy: " + mutationStrategy.getClass().getCanonicalName());
 
             Individuum<Route, Customer> testIndividuum = this.templateIndividuum.createCopy();
 
             mutationStrategy.mutate(testIndividuum);
 
             HashSet<Customer> seen = new HashSet<>();
-            for (Customer customer : testIndividuum.getGenotype().getGenes()){
+            for (Customer customer : testIndividuum.getGenotype().getGenes()) {
                 if (seen.contains(customer)) {
-                    Assertions.fail("Found duplicate: "+customer);
+                    Assertions.fail("Found duplicate: " + customer);
                 }
                 seen.add(customer);
             }
 
-            System.out.println("Success: "+mutationStrategy.getClass().getCanonicalName());
+            System.out.println("Success: " + mutationStrategy.getClass().getCanonicalName());
         }
     }
 
@@ -86,7 +88,7 @@ public class TestMutation {
     @DisplayName("all customers should be included")
     public void completeness() {
         for (MutationStrategy mutationStrategy : this.mutationStrategies) {
-            System.out.println("Testing mutationStrategy: "+mutationStrategy.getClass().getCanonicalName());
+            System.out.println("Testing mutationStrategy: " + mutationStrategy.getClass().getCanonicalName());
 
             Individuum<Route, Customer> testIndividuum = this.templateIndividuum.createCopy();
 
@@ -98,7 +100,7 @@ public class TestMutation {
                 }
             }
 
-            System.out.println("Success: "+mutationStrategy.getClass().getCanonicalName());
+            System.out.println("Success: " + mutationStrategy.getClass().getCanonicalName());
         }
     }
 
@@ -107,7 +109,7 @@ public class TestMutation {
     @DisplayName("permutation of the mutated individuum should be different from before the mutation")
     public void structure() {
         for (MutationStrategy mutationStrategy : this.mutationStrategies) {
-            System.out.println("Testing mutationStrategy: "+mutationStrategy.getClass().getCanonicalName());
+            System.out.println("Testing mutationStrategy: " + mutationStrategy.getClass().getCanonicalName());
 
             Individuum<Route, Customer> testIndividuum = this.templateIndividuum.createCopy();
 
@@ -115,7 +117,7 @@ public class TestMutation {
 
             Assertions.assertNotEquals(this.templateIndividuum.getGenotype(), testIndividuum.getGenotype());
 
-            System.out.println("Success: "+mutationStrategy.getClass().getCanonicalName());
+            System.out.println("Success: " + mutationStrategy.getClass().getCanonicalName());
         }
     }
 }

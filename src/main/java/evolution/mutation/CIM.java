@@ -7,7 +7,7 @@ import evolution.Individuum;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class CIM extends MutationStrategy{
+public class CIM extends MutationStrategy {
     private final Random randomGenerator;
 
     public CIM(Random randomGenerator) {
@@ -24,7 +24,7 @@ public class CIM extends MutationStrategy{
         ArrayList<U> genesOriginalOrder = new ArrayList<>(genes);
 
         for (int i = 0; i <= inversionPoint; i++) {
-            genes.set(i, genesOriginalOrder.get(inversionPoint-i));
+            genes.set(i, genesOriginalOrder.get(inversionPoint - i));
         }
         double secondRange = geneCount - inversionPoint;
         for (int i = 1; i < secondRange; i++) {

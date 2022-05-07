@@ -11,7 +11,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 public class DataManagement {
-    private DataManagement(){
+    private DataManagement() {
     }
 
     public static DataInstance readData() {
@@ -19,11 +19,11 @@ public class DataManagement {
         URL dataURL = Thread.currentThread().getContextClassLoader().getResource(Configuration.INSTANCE.dataName);
         if (dataURL == null) throw new RuntimeException("No data file found.");
 
-        try (BufferedReader reader = new BufferedReader(new FileReader(dataURL.getPath(), StandardCharsets.UTF_8))){
+        try (BufferedReader reader = new BufferedReader(new FileReader(dataURL.getPath(), StandardCharsets.UTF_8))) {
             return DataManagement.parseFile(reader);
         } catch (IOException e) {
             e.printStackTrace();
-            throw new RuntimeException("Error while reading file: "+dataURL.getPath());
+            throw new RuntimeException("Error while reading file: " + dataURL.getPath());
         }
     }
 
@@ -37,23 +37,25 @@ public class DataManagement {
         String line;
         int lineNumber = 1;
         while ((line = reader.readLine()) != null) {
-            if (lineNumber < 10){
+            if (lineNumber < 10) {
                 if (lineNumber == 1) {
                     name = line;
-                }else if (lineNumber == 5) {
+                } else if (lineNumber == 5) {
                     String[] vehicleData = line.split(" ");
-                    if (vehicleData.length < 2) throw new RuntimeException("To few numbers in vehicle line "+lineNumber+".");
+                    if (vehicleData.length < 2)
+                        throw new RuntimeException("To few numbers in vehicle line " + lineNumber + ".");
 
                     try {
                         vehiclesNum = Integer.parseInt(vehicleData[0]);
                         vehiclesCapacity = Integer.parseInt(vehicleData[1]);
-                    }catch (NumberFormatException e) {
-                        throw new RuntimeException("Line #"+lineNumber+" contains something that is not an integer.");
+                    } catch (NumberFormatException e) {
+                        throw new RuntimeException("Line #" + lineNumber + " contains something that is not an integer.");
                     }
                 }
-            }else{
+            } else {
                 String[] customerData = line.split(" ");
-                if (customerData.length < 7) throw new RuntimeException("To few numbers in customer line "+lineNumber+".");
+                if (customerData.length < 7)
+                    throw new RuntimeException("To few numbers in customer line " + lineNumber + ".");
 
                 try {
                     int id = Integer.parseInt(customerData[0]);
@@ -66,11 +68,11 @@ public class DataManagement {
 
                     if (demand != 0) {
                         customers.add(new Customer(id, xCoordinate, yCoordinate, demand, readyTime, dueDate, serviceTime));
-                    }else {
+                    } else {
                         depots.add(new Depot(id, xCoordinate, yCoordinate));
                     }
-                }catch (NumberFormatException e) {
-                    throw new RuntimeException("Line #"+lineNumber+" contains something that is not an integer.");
+                } catch (NumberFormatException e) {
+                    throw new RuntimeException("Line #" + lineNumber + " contains something that is not an integer.");
                 }
             }
 

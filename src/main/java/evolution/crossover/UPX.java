@@ -20,7 +20,8 @@ public class UPX extends CrossoverStrategy {
     // This implementation is taken straight from the Crossover Tutorial and suffers from the same problems explained there.
     @Override
     protected <T extends IGenotype<U>, U extends IGene> ArrayList<Individuum<T, U>> executeInner(Individuum<T, U> parent1, Individuum<T, U> parent2) {
-        if (parent1.getGenotype().getGenes().get(0).getClass() != parent2.getGenotype().getGenes().get(0).getClass()) throw new RuntimeException("Crossover only works with parents that hold the same concrete type of gene!");
+        if (parent1.getGenotype().getGenes().get(0).getClass() != parent2.getGenotype().getGenes().get(0).getClass())
+            throw new RuntimeException("Crossover only works with parents that hold the same concrete type of gene!");
 
         ArrayList<Individuum<T, U>> children = new ArrayList<>();
 

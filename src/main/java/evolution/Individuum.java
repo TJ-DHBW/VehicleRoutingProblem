@@ -8,19 +8,19 @@ public class Individuum<T extends IGenotype<U>, U extends IGene> {
     private final T genotype;
     private final Function<ArrayList<U>, Double> fitnessFunction;
 
-    public Individuum(T genotype, Function<ArrayList<U>, Double> fitnessFunction){
+    public Individuum(T genotype, Function<ArrayList<U>, Double> fitnessFunction) {
         this.genotype = genotype;
         this.fitnessFunction = fitnessFunction;
     }
 
     public double getFitness() {
-        if (this.fitness == Double.MAX_VALUE){
+        if (this.fitness == Double.MAX_VALUE) {
             this.fitness = this.fitnessFunction.apply(this.genotype.getGenes());
         }
         return fitness;
     }
 
-    public Individuum<T, U> createCopy(){
+    public Individuum<T, U> createCopy() {
         @SuppressWarnings("unchecked")
         T genotypeCopy = (T) this.genotype.createCopy();
         return new Individuum<>(genotypeCopy, this.fitnessFunction);

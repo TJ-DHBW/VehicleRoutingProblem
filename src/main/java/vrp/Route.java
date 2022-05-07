@@ -37,9 +37,9 @@ public class Route implements IGenotype<Customer> {
             customersServed = 0;
             int supplyAccumulator = 0;
             int indexOffset = 0;
-            while (i+indexOffset < completeRoute.size()){
-                Customer nextCustomer = completeRoute.get(i+indexOffset);
-                if (supplyAccumulator+ nextCustomer.demand() > vehicleCapacity) break;
+            while (i + indexOffset < completeRoute.size()) {
+                Customer nextCustomer = completeRoute.get(i + indexOffset);
+                if (supplyAccumulator + nextCustomer.demand() > vehicleCapacity) break;
                 supplyAccumulator += nextCustomer.demand();
                 customersServed++;
                 subRoute.add(nextCustomer);

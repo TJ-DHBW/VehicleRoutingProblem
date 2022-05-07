@@ -13,7 +13,7 @@ public class GeneticAlgorithm<T extends IGenotype<U>, U extends IGene> {
     private final CrossoverStrategy crossoverStrategy;
     private final MutationStrategy mutationStrategy;
     private final SelectionStrategy selectionStrategy;
-    private  Population<T, U> population;
+    private Population<T, U> population;
 
     private int selectionSize = 100;
     private double crossoverRate = 0.7;
@@ -26,7 +26,7 @@ public class GeneticAlgorithm<T extends IGenotype<U>, U extends IGene> {
         this.selectionStrategy = selectionStrategy;
     }
 
-    public void initialize(int populationSize, Collection<U> genePool, Function<ArrayList<U>, T> genotypeConstructor, Function<ArrayList<U>, Double> fitnessFunction){
+    public void initialize(int populationSize, Collection<U> genePool, Function<ArrayList<U>, T> genotypeConstructor, Function<ArrayList<U>, Double> fitnessFunction) {
         ArrayList<Individuum<T, U>> individuums = new ArrayList<>();
         ArrayList<U> availableGenes = new ArrayList<>(genePool);
 
@@ -39,7 +39,7 @@ public class GeneticAlgorithm<T extends IGenotype<U>, U extends IGene> {
         population = new Population<>(individuums);
     }
 
-    public void evolvePopulation(int maxGenerationCount){
+    public void evolvePopulation(int maxGenerationCount) {
         int generationCount = 0;
 
         while (generationCount < maxGenerationCount) {
@@ -66,21 +66,21 @@ public class GeneticAlgorithm<T extends IGenotype<U>, U extends IGene> {
         return this.selectionStrategy.select(individuums, selectionSize);
     }
 
-    private ArrayList<Individuum<T, U>> makeLoveNotWar(List<Individuum<T, U>> matingPool){
+    private ArrayList<Individuum<T, U>> makeLoveNotWar(List<Individuum<T, U>> matingPool) {
         Collections.shuffle(matingPool);
         ArrayList<Individuum<T, U>> children = new ArrayList<>();
 
         for (int i = 1; i < matingPool.size(); i += 2) {
             if (this.randomGenerator.nextDouble() < this.crossoverRate) continue;
 
-            ArrayList<Individuum<T, U>> newChildren = this.crossoverStrategy.execute(matingPool.get(i-1), matingPool.get(i));
+            ArrayList<Individuum<T, U>> newChildren = this.crossoverStrategy.execute(matingPool.get(i - 1), matingPool.get(i));
             children.addAll(newChildren);
         }
 
         return children;
     }
 
-    private void mutate(ArrayList<Individuum<T, U>> individuums){
+    private void mutate(ArrayList<Individuum<T, U>> individuums) {
         individuums.forEach(individuum -> {
             if (this.randomGenerator.nextDouble() < this.mutationRate) return;
             this.mutationStrategy.mutate(individuum);

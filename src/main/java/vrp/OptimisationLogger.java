@@ -22,7 +22,8 @@ public class OptimisationLogger {
     private Date endTime = null;
 
     public void logToFile(Path logFilePath) throws IOException {
-        if (dataInstance == null || geneticAlgorithm == null || startTime == null || endTime == null) throw new IllegalStateException("Logging is only possible after setting all data");
+        if (dataInstance == null || geneticAlgorithm == null || startTime == null || endTime == null)
+            throw new IllegalStateException("Logging is only possible after setting all data");
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(logFilePath.toFile()))) {
             writeHeader(writer);
@@ -67,14 +68,14 @@ public class OptimisationLogger {
         }).toList();
 
         int totalCountVehicleUsed;
-        if(Configuration.INSTANCE.vrpMode == VRPMode.CVRP) {
+        if (Configuration.INSTANCE.vrpMode == VRPMode.CVRP) {
             totalCountVehicleUsed = 1;
-        }else {
+        } else {
             totalCountVehicleUsed = 0;
             int[] returnTimes = new int[dataInstance.getVehiclesNum()];
             for (List<Integer> timings : routeTimings) {
                 if (returnTimes[0] == 0) totalCountVehicleUsed++;
-                returnTimes[0] = timings.get(1) + Math.max(0, returnTimes[0]-timings.get(0));
+                returnTimes[0] = timings.get(1) + Math.max(0, returnTimes[0] - timings.get(0));
                 Arrays.sort(returnTimes);
             }
         }
@@ -103,17 +104,17 @@ public class OptimisationLogger {
         ArrayList<Customer> championGenes = this.geneticAlgorithm.getPopulation().getChampion().getGenotype().getGenes();
         ArrayList<ArrayList<Customer>> subRoutes = Route.splitToSubRoutes(championGenes, dataInstance.getVehiclesCapacity());
 
-        String[] lines = new String[subRoutes.size()+1];
+        String[] lines = new String[subRoutes.size() + 1];
         lines[0] = "[Route Management]";
 
         for (int i = 0; i < subRoutes.size(); i++) {
             ArrayList<Customer> currentSubRoute = subRoutes.get(i);
             StringBuilder routeLine = new StringBuilder();
-            routeLine.append("Route #").append(i+1).append(" |");
+            routeLine.append("Route #").append(i + 1).append(" |");
             for (Customer customer : currentSubRoute) {
                 routeLine.append(" ").append(customer.id());
             }
-            lines[i+1] = routeLine.toString();
+            lines[i + 1] = routeLine.toString();
         }
 
         writeLines(writer, lines);
@@ -136,14 +137,14 @@ public class OptimisationLogger {
         int countMutationOperations = this.geneticAlgorithm.getMutationStrategy().getMutationCount();
 
         writeLines(writer, new String[]{"[Genetic Algorithm]",
-                "maximumNumberIterations = "+maximumNumberIterations,
-                "populationSize = "+populationSize,
-                "isElitismEnabled = "+isElitismEnabled,
-                selectionName+" ("+selectionType+") | k = "+k,
-                crossoverName+" ("+crossoverType+") | crossoverRatio = "+crossoverRatio,
-                mutationName+" ("+mutationType+") | mutationRatio = "+mutationRatio,
-                "countCrossoverOperations = "+countCrossoverOperations,
-                "countMutationOperations = "+countMutationOperations});
+                "maximumNumberIterations = " + maximumNumberIterations,
+                "populationSize = " + populationSize,
+                "isElitismEnabled = " + isElitismEnabled,
+                selectionName + " (" + selectionType + ") | k = " + k,
+                crossoverName + " (" + crossoverType + ") | crossoverRatio = " + crossoverRatio,
+                mutationName + " (" + mutationType + ") | mutationRatio = " + mutationRatio,
+                "countCrossoverOperations = " + countCrossoverOperations,
+                "countMutationOperations = " + countMutationOperations});
     }
 
     private void writeDemandManagement(BufferedWriter writer) throws IOException {
@@ -153,10 +154,10 @@ public class OptimisationLogger {
         int totalSumDemand = this.dataInstance.getCustomers().stream().map(Customer::demand).reduce(0, Integer::sum);
 
         writeLines(writer, new String[]{"[Demand Management]",
-                "totalCountVehicle = "+totalCountVehicle,
-                "maximumCapacityVehicle = "+maximumCapacityVehicle,
-                "totalCountCustomer = "+totalCountCustomer,
-                "totalSumDemand = "+totalSumDemand});
+                "totalCountVehicle = " + totalCountVehicle,
+                "maximumCapacityVehicle = " + maximumCapacityVehicle,
+                "totalCountCustomer = " + totalCountCustomer,
+                "totalSumDemand = " + totalSumDemand});
     }
 
     private void writeHeader(BufferedWriter writer) throws IOException {
@@ -166,13 +167,13 @@ public class OptimisationLogger {
         long runtime = TimeUnit.SECONDS.convert(this.endTime.getTime() - this.startTime.getTime(), TimeUnit.MILLISECONDS);
 
         writeLines(writer, new String[]{
-                "Optimisation executed on "+executionDate,
-                "Started: "+startTime+" | Finished: "+endTime+" | Runtime: "+runtime+" seconds"
+                "Optimisation executed on " + executionDate,
+                "Started: " + startTime + " | Finished: " + endTime + " | Runtime: " + runtime + " seconds"
         });
     }
 
     private void writeLines(BufferedWriter writer, String[] lines) throws IOException {
-        for (String line : lines){
+        for (String line : lines) {
             writer.write(line);
             writer.newLine();
         }

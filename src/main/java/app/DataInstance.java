@@ -26,7 +26,8 @@ public class DataInstance {
     }
 
     private double[][] calculateDistanceMatrix() {
-        if (!this.hasContinuousIdsStartingFromZero()) throw new IllegalStateException("Distance matrix can only be calculated for continuous ids starting from 0.");
+        if (!this.hasContinuousIdsStartingFromZero())
+            throw new IllegalStateException("Distance matrix can only be calculated for continuous ids starting from 0.");
         int amountLocations = this.depots.size() + this.customers.size();
         double[][] ret = new double[amountLocations][amountLocations];
 
@@ -40,8 +41,8 @@ public class DataInstance {
                 ILocation location2 = locations.get(j);
                 if (i == j) {
                     ret[i][j] = 0.0;
-                }else {
-                    ret[i][j] = Math.sqrt(Math.pow((location1.getX()-location2.getX()), 2) + Math.pow((location1.getY()-location2.getY()), 2));
+                } else {
+                    ret[i][j] = Math.sqrt(Math.pow((location1.getX() - location2.getX()), 2) + Math.pow((location1.getY() - location2.getY()), 2));
                     ret[j][i] = ret[i][j];
                 }
             }

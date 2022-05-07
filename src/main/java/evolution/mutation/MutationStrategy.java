@@ -8,7 +8,7 @@ import evolution.Individuum;
 public abstract class MutationStrategy {
     private int mutationCount = 0;
 
-    public <T extends IGenotype<U>, U extends IGene> void mutate(Individuum<T, U> i){
+    public <T extends IGenotype<U>, U extends IGene> void mutate(Individuum<T, U> i) {
         mutationCount++;
         mutateInner(i);
     }
@@ -19,12 +19,12 @@ public abstract class MutationStrategy {
         return mutationCount;
     }
 
-    public static MutationStrategy get(MutationType mutationType){
-        return switch (mutationType){
+    public static MutationStrategy get(MutationType mutationType) {
+        return switch (mutationType) {
             case CIM -> new CIM(Configuration.INSTANCE.randomGenerator);
             case SCM -> new SCM(Configuration.INSTANCE.randomGenerator);
 
-            default -> throw new RuntimeException(mutationType+" is not implemented yet.");
+            default -> throw new RuntimeException(mutationType + " is not implemented yet.");
         };
     }
 }
