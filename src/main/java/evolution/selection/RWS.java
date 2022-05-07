@@ -40,6 +40,8 @@ public class RWS extends SelectionStrategy {
         for(Individuum<T, U> individuum : selectionPool){
             totalFitness += 1/individuum.getFitness();
         }
+        if(selectionSize%2 == 1)
+            selectionSize = selectionSize-1;
 
         while(matingPoolSet.size() <  selectionSize){
             addIndividuumByProbability(matingPoolSet, selectionPool, totalFitness);
