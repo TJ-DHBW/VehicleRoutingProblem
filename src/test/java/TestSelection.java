@@ -1,6 +1,7 @@
 import app.DataInstance;
 import app.DataManagement;
 import evolution.Individuum;
+import evolution.selection.RWS;
 import evolution.selection.SelectionStrategy;
 import evolution.selection.TOS;
 import org.junit.jupiter.api.*;
@@ -31,7 +32,8 @@ public class TestSelection {
         when(randomRWS.nextInt(anyInt())).thenReturn(0);
         when(randomRWS.nextDouble()).thenReturn(0.1, 0.5, 0.7, 0.3, 0.9, 0.98);
         this.selectionStrategies = new SelectionStrategy[]{
-                new TOS(randomTOS)
+                new TOS(randomTOS),
+                new RWS(randomRWS)
         };
 
         Function<ArrayList<Customer>, Double> ff = ignore -> 1.0;
